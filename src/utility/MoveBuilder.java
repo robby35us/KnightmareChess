@@ -54,8 +54,6 @@ public class MoveBuilder{
 			rankOffset = -rankOffset;
 			fileOffset = -fileOffset;
 		}
-		
-		System.out.println(rankOffset + " " + fileOffset);
 		if(rankOffset == 2)
 			if(fileOffset == 1)
 				return MoveCompositor.compositeMoves(move, new MoveLForwardRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.LForwardRight), ops);
@@ -151,8 +149,6 @@ public class MoveBuilder{
 			if(fileOffset == -2)
 				return MoveCompositor.compositeMoves(move, new MoveReverseKingSideCastle(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ReverseKingSideCastle), ops);
 			else{
-				
-System.out.println("This shouldn't be reached!");
 				return null;
 			}
 		}

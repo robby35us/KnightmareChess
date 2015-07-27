@@ -6,6 +6,7 @@ import moveDecorators.ActualMove;
 
 import utility.MoveInput;
 import definitions.Color;
+import definitions.IOFramework;
 import definitions.Turn;
 
 public class ConsoleIO implements IOFramework {

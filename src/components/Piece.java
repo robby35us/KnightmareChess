@@ -1,6 +1,10 @@
 package components;
+import game.Operations;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import utility.MoveBuilder;
 import utility.MoveTypeAndConstraints;
 import constraints.MoveConstraint;
 import definitions.*;
@@ -14,9 +18,10 @@ import definitions.*;
  * making and invalid move). A Piece also keeps track of whether 
  * or not it has been moved away from it's original position.
  */
-public class Piece implements Iterable<MoveTypeAndConstraints>{
+public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, PieceObserver{
 	protected PieceType type;
 	protected Color color;
+	protected Space space;
 	
 	// Represents whether a piece has been moved away from it's 
 	// original position.
@@ -26,14 +31,20 @@ public class Piece implements Iterable<MoveTypeAndConstraints>{
 	// moves a piece can make and the constraints placed on those
 	// movements.
 	protected ArrayList<MoveTypeAndConstraints> moveTypesAndConstraints;
+	private ArrayList<KingObserver> kings;
+	private static Operations ops;
 	
 	
 	public Piece(PieceType type, Color color){
 		this.type = type;
 		this.color = color;
 		moveTypesAndConstraints = new ArrayList<MoveTypeAndConstraints>();
+		kings = new ArrayList<KingObserver>();
 	}
 	
+	public static void setOps(Operations ops){
+		Piece.ops = ops;
+	}
 	// Public getters 
 	public PieceType getType() {
 		return type;
@@ -41,6 +52,14 @@ public class Piece implements Iterable<MoveTypeAndConstraints>{
 	
 	public Color getColor(){
 		return color;
+	}
+	
+	public Space getSpace(){
+		return space;
+	}
+	
+	public void setSpace(Space space){
+		this.space = space;
 	}
 	
 	/* !!? How do we handle the MoveType already being added?!!!
@@ -89,5 +108,32 @@ public class Piece implements Iterable<MoveTypeAndConstraints>{
 			if(moveTypesAndConstraints.get(i).getMoveType() == moveType)
 				return moveTypesAndConstraints.get(i).getConstraints();
 		return null;
+	}
+
+	@Override
+	public boolean updatePiece(Space destination) {
+		return MoveBuilder.buildMoveObject(space, destination, ops) == null;
+	}
+
+	@Override
+	public void registerKingObserver(KingObserver o) {
+		kings.add(o);
+	}
+
+	@Override
+	public void removeKingObserver(KingObserver o) {
+		int index = kings.indexOf(o);
+		if(index >= 0)
+			kings.remove(index);
+	}
+
+	@Override
+	public boolean notifyKingObservers() {
+		for(KingObserver k : kings){
+			if(!k.updateKing())
+				return false;
+		}
+		return true;
+		
 	}
 }

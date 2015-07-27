@@ -34,7 +34,11 @@ public class PieceFactory {
 	}
 	
 	public Piece makePiece(PieceType type, Color color){
-		Piece newPiece = new Piece(type,color);
+		Piece newPiece;
+		if(type == PieceType.King) // there could possibly be multiple types that count as kings
+			newPiece = new King(type, color);
+		else
+			newPiece = new Piece(type, color);
 		switch(type){
 			case Pawn : newPiece.addMove(MoveType.Forward, new MoveConstraint[]{mbob,sm, mbm, cc}); 
 						newPiece.addMove(MoveType.ForwardLeft, new MoveConstraint[]{mbob,sm,mc});

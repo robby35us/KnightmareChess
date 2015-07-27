@@ -6,6 +6,7 @@ import moveDecorators.ActualMove;
 import components.Board;
 import utility.MoveInput;
 import definitions.Color;
+import definitions.IOFramework;
 import definitions.Turn;
 
 public class TestIO implements IOFramework {

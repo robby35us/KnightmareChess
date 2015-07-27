@@ -6,6 +6,7 @@ import moveDecorators.ActualMove;
 import utility.MoveBuilder;
 import utility.MoveInput;
 import definitions.Color;
+import definitions.IOFramework;
 import definitions.Turn;
 
 public class Start {
@@ -21,8 +22,10 @@ public class Start {
 				move = MoveBuilder.buildMoveObject(moveInput.getInit(), moveInput.getDest(), fw.getOps());
 			else
 				move = null;
-			if(move != null && fw.meetsUniversalConstraints(move, turn)){
-				Operations.makeMove(move, turn, fw.getOps());
+			
+			// MoveBuilder.buildMoveObject() returns null, this doesn't run and the program exits.
+			// This isn't always the desired behavior.
+			if(move != null && fw.meetsUniversalConstraints(move, turn) && Operations.makeMove(move, turn, fw.getOps())){
 				if(turn == Turn.Player1)
 					turn = Turn.Player2;
 				else

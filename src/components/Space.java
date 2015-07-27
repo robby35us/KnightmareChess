@@ -68,7 +68,10 @@ public class Space {
 	public boolean changePiece(Piece newPiece){
 		boolean wasPrevPiece = piece != null;
 		piece = newPiece;
+		if(newPiece != null)
+			piece.setSpace(this);
 		return wasPrevPiece;
+
 	}
 	
 	/*

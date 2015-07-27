@@ -23,6 +23,7 @@ public class Operations {
 	
 	public Operations(boolean displayText) {
 		this.displayText = displayText;
+		Piece.setOps(this);
 	}
 
 	public void setupGame() {
@@ -31,8 +32,8 @@ public class Operations {
 		PlayerSet [] sets = new PlayerSet[2];
 		sets[0] = new PlayerSet(factory, Color.White);
 		sets[1] = new PlayerSet(factory, Color.Black);
-		whitePlayer = new Player(sets[0], Color.White);
-		blackPlayer = new Player(sets[1], Color.Black);
+		whitePlayer = new Player(sets[0], Color.White, sets[1].getKing());
+		blackPlayer = new Player(sets[1], Color.Black, sets[0].getKing());
 		Setup.setupChessBoard(sets[0], sets[1], board);
 	}
 	
@@ -44,23 +45,36 @@ public class Operations {
 		PlayerSet [] sets = new PlayerSet[2];
 		sets[0] = new PlayerSet(factory, Color.White);
 		sets[1] = new PlayerSet(factory, Color.Black);
-		whitePlayer = new Player(sets[0], Color.White);
-		blackPlayer = new Player(sets[1], Color.Black);
+		whitePlayer = new Player(sets[0], Color.White, sets[1].getKing());
+		blackPlayer = new Player(sets[1], Color.Black, sets[0].getKing());
 	}
 
 	public void prettyPrintBoard() {
 		Space head = board.getSpace(Rank.Eight, File.A);
 		Space current = head;
-		System.out.println(" Rank   ----   ----   ----   ----   ----   ----   ----   ----");
+		System.out.println(" Rank    ----   ----   ----   ----   ----   ----   ----   ----");
 		for(int i = 8; i >= 1; i--){
-			System.out.printf("  %d    | ", i);
+			if(current.getColor() == Color.White)
+				System.out.printf("  %d    |  ", i);
+			else {
+				System.out.printf("  %d    | |", i);
+			}
 			for(int j = 1; j <= 8; j++){
 				printPieceCode(current);
-				System.out.print("  |  ");
+				if(current.getColor() == Color.White)
+					if(current.getFile() == File.H)
+						System.out.print("  |  ");
+					else
+						System.out.print("  | |");
+				else
+					if(current.getFile() == File.A)
+						System.out.print("  |  ");
+					else
+						System.out.print("| |  ");
 				current = current.getSpaceRight();
 			}
 			System.out.println();
-			System.out.println("        ----   ----   ----   ----   ----   ----   ----   ----");
+			System.out.println("         ----   ----   ----   ----   ----   ----   ----   ----");
 			
 			head = head.getSpaceBackward();
 			current = head;
@@ -140,11 +154,16 @@ public class Operations {
 		Space dest = move.getDestinationSpace();
 		Player player = turn == Turn.Player1 ? ops.whitePlayer : ops.blackPlayer;
 		Piece captured = dest.getPiece();
-		if(captured != null)
-			player.losePiece(captured);
 		Piece moving = init.getPiece();
 		dest.changePiece(moving);
 		init.changePiece(null);
+		if(!moving.notifyKingObservers()){
+			dest.changePiece(captured);
+			init.changePiece(moving);
+			return false;
+		}
+		if(captured != null)
+			player.losePiece(captured);
 		return true;
 	}
 

@@ -1,11 +1,7 @@
 package test;
-
-
 import moves.Move;
-
 import org.junit.Test;
 import org.junit.BeforeClass;
-
 import definitions.Color;
 import definitions.MoveType;
 import factory.MoveFactory;

@@ -1,12 +1,11 @@
-package game;
+package definitions;
 
 //import components.Space;
 
 //import moveDecorators.ActualMove;
+import game.Operations;
 import moveDecorators.ActualMove;
 import utility.MoveInput;
-import definitions.Color;
-import definitions.Turn;
 
 public interface IOFramework {
 	public Operations getOps();

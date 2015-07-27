@@ -15,26 +15,36 @@ public class PlayerSet implements Iterable<Piece>{
 	private PieceFactory factory;
 	private Color color;
 	private ArrayList<Piece> pieces;
+	private King king;
 	
 	/*
 	 * Creates a PlayerSet with the standard 16 pieces in the given
 	 * color. The color cannot be changed.
 	 */
 	public PlayerSet(PieceFactory factory, Color color){
-
-		this.factory = factory;
 		this.color = color;
+		this.factory = factory;
+		this.king = (King) factory.makePiece(PieceType.King, color);
+		
 		pieces = new ArrayList<Piece>();
 		pieces.add(factory.makePiece(PieceType.Rook, color));
 		pieces.add(factory.makePiece(PieceType.Knight, color));
 		pieces.add(factory.makePiece(PieceType.Bishop, color));
 		pieces.add(factory.makePiece(PieceType.Queen, color));
-		pieces.add(factory.makePiece(PieceType.King, color));
+		pieces.add(king);
 		pieces.add(factory.makePiece(PieceType.Bishop, color));
 		pieces.add(factory.makePiece(PieceType.Knight, color));
 		pieces.add(factory.makePiece(PieceType.Rook, color));
 		for(int i = 0; i < 8; i++)
 			pieces.add(factory.makePiece(PieceType.Pawn, color));
+		
+		setKingObserver(king);
+	}
+
+	public void setKingObserver(King king){
+		for(Piece p : pieces){
+			p.registerKingObserver(king);
+		}
 	}
 
 	/*
@@ -74,5 +84,9 @@ public class PlayerSet implements Iterable<Piece>{
 	// public getter
 	public Color getColor() {
 		return color;
+	}
+
+	public King getKing() {
+		return king;
 	}
 }
