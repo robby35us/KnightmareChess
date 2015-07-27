@@ -67,9 +67,6 @@ public class Operations {
 					else
 						System.out.print("  | |");
 				else
-					if(current.getFile() == File.A)
-						System.out.print("  |  ");
-					else
 						System.out.print("| |  ");
 				current = current.getSpaceRight();
 			}
@@ -153,17 +150,21 @@ public class Operations {
 		Space init = move.getInitialSpace();
 		Space dest = move.getDestinationSpace();
 		Player player = turn == Turn.Player1 ? ops.whitePlayer : ops.blackPlayer;
+		Player opposingPlayer = player == ops.whitePlayer ? ops.blackPlayer : ops.whitePlayer;
 		Piece captured = dest.getPiece();
 		Piece moving = init.getPiece();
 		dest.changePiece(moving);
 		init.changePiece(null);
+		if(captured != null){
+			opposingPlayer.losePiece(captured);
+			captured.setSpace(null);
+		}
 		if(!moving.notifyKingObservers()){
 			dest.changePiece(captured);
 			init.changePiece(moving);
+			opposingPlayer.addPiece(captured);
 			return false;
 		}
-		if(captured != null)
-			player.losePiece(captured);
 		return true;
 	}
 

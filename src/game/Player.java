@@ -31,4 +31,10 @@ public class Player {
 	public Color getColor(){
 		return color;
 	}
+
+	public void addPiece(Piece piece) {
+		opposingKing.registerPieceObserver(piece);
+		piece.registerKingObserver(set.getKing());
+		set.addPiece(piece);
+	}
 }

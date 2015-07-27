@@ -112,6 +112,7 @@ public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, Pi
 
 	@Override
 	public boolean updatePiece(Space destination) {
+System.out.println("Piece.updatePiece called on piece of type " + this.type);
 		return MoveBuilder.buildMoveObject(space, destination, ops) == null;
 	}
 
@@ -130,7 +131,7 @@ public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, Pi
 	@Override
 	public boolean notifyKingObservers() {
 		for(KingObserver k : kings){
-			if(!k.updateKing())
+			if(!k.updateKing(this))
 				return false;
 		}
 		return true;

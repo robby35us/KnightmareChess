@@ -72,6 +72,10 @@ public class PlayerSet implements Iterable<Piece>{
 		return newPiece;
 	}
 	
+	public void addPiece(Piece piece) {
+		pieces.add(piece);
+	}
+	
 	@Override
 	/*
 	 * Returns an Iterator of the pieces in the 
@@ -89,4 +93,6 @@ public class PlayerSet implements Iterable<Piece>{
 	public King getKing() {
 		return king;
 	}
+
+
 }

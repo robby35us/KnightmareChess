@@ -19,8 +19,8 @@ public class King extends Piece implements KingSubject, KingObserver {
 	}
 
 	@Override
-	public boolean updateKing() {
-		return notifyPieceObservers(this.space);
+	public boolean updateKing(Piece moving) {
+			return notifyPieceObservers(this.space);
 	}
 
 	@Override
