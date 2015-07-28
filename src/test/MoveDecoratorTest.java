@@ -152,7 +152,7 @@ public class MoveDecoratorTest {
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
 			move = factory.makeMove(MoveType.BackwardLeft, colors[i]);
-			TestUtility.verifyMove(move, -1, 1, colors[i]);
+			TestUtility.verifyMove(move, -1, -1, colors[i]);
 		}
 	}
 	

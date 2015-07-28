@@ -70,6 +70,8 @@ public class Space {
 		piece = newPiece;
 		if(newPiece != null)
 			piece.setSpace(this);
+		else
+			System.out.println("Piece at space " + this + " set to null.");
 		return wasPrevPiece;
 
 	}

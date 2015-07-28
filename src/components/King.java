@@ -10,37 +10,37 @@ import definitions.PieceType;
 
 public class King extends Piece implements KingSubject, KingObserver {
 
-	private ArrayList<PieceObserver> observers;
+	private ArrayList<PieceObserver> opposingObservers;
 	
 	// there could possibly be multiple types that count as kings
 	public King(PieceType type, Color color) {
 		super(type, color);
-		observers = new ArrayList<PieceObserver>();
+		opposingObservers = new ArrayList<PieceObserver>();
 	}
 
 	@Override
-	public boolean updateKing(Piece moving) {
-			return notifyPieceObservers(this.space);
+	public boolean updateKing(Piece piece) {
+		return notifyOpposingPieceObservers(this.space);
 	}
 
 	@Override
-	public void registerPieceObserver(PieceObserver o) {
-		observers.add(o);
+	public void registerOpposingPieceObserver(PieceObserver o) {
+		opposingObservers.add(o);
 	}
 
 	@Override
-	public void removePieceObserver(PieceObserver o) {
-		int index = observers.indexOf(o);
+	public void removeOpposingPieceObserver(PieceObserver o) {
+		int index = opposingObservers.indexOf(o);
 		if(index >= 0)
-			observers.remove(index);
+			opposingObservers.remove(index);
 	}
 
 	@Override
-	public boolean notifyPieceObservers(Space dest) {
+	public boolean notifyOpposingPieceObservers(Space dest) {
 		space.changePiece(null);
 		boolean validMove = true;
-		for(PieceObserver o : observers){
-			if(!o.updatePiece(dest)){
+		for(PieceObserver o : opposingObservers){
+			if(!o.updateOpposingPiece(dest)){
 				validMove = false;
 				break;
 			}
@@ -48,5 +48,4 @@ public class King extends Piece implements KingSubject, KingObserver {
 		space.changePiece(this);
 		return validMove;
 	}
-
 }

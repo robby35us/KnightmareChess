@@ -3,6 +3,7 @@ package game;
 import java.util.Scanner;
 
 import setup.Setup;
+import utility.ErrorMessage;
 import utility.MoveInput;
 import components.Board;
 import components.Piece;
@@ -146,28 +147,41 @@ public class Operations {
 		 return input.charAt(0) == 'q' || input.charAt(0) == 'Q';
 	}
 
-	public static boolean makeMove(ActualMove move, Turn turn, Operations ops) {
-		Space init = move.getInitialSpace();
-		Space dest = move.getDestinationSpace();
-		Player player = turn == Turn.Player1 ? ops.whitePlayer : ops.blackPlayer;
-		Player opposingPlayer = player == ops.whitePlayer ? ops.blackPlayer : ops.whitePlayer;
-		Piece captured = dest.getPiece();
-		Piece moving = init.getPiece();
-		dest.changePiece(moving);
-		init.changePiece(null);
+	public static ErrorMessage makeMove(ActualMove move, Turn turn, Operations ops) {
+		Piece moving = move.getInitialSpace().getPiece();
+		Piece captured = movePiece(move, ops);
+		Player opposite = turn == Turn.Player1 ? ops.blackPlayer : ops.whitePlayer;
 		if(captured != null){
-			opposingPlayer.losePiece(captured);
+			opposite.losePiece(captured);
 			captured.setSpace(null);
 		}
 		if(!moving.notifyKingObservers()){
-			dest.changePiece(captured);
-			init.changePiece(moving);
-			opposingPlayer.addPiece(captured);
-			return false;
+			Operations.undoMove(move, captured, ops);
+			if(captured != null){
+				(captured.getColor() == Color.White ? ops.whitePlayer : ops.blackPlayer).addPiece(captured);
+				captured.setSpace(move.getDestinationSpace());
+			}
+			ErrorMessage result = new ErrorMessage();
+			result.setMate();
+			return result;
 		}
-		return true;
+		 //check the opposite player for mate
+		return new ErrorMessage();
 	}
 
+	public static Piece movePiece(ActualMove move, Operations ops){
+		Piece moving = move.getInitialSpace().getPiece();
+		Piece captured = move.getDestinationSpace().getPiece();
+		move.getDestinationSpace().changePiece(moving);
+		move.getInitialSpace().changePiece(null);
+		return captured;
+	}
+	
+	public static void undoMove(ActualMove move, Piece captured, Operations ops){
+		move.getInitialSpace().changePiece(move.getDestinationSpace().getPiece());
+		move.getDestinationSpace().changePiece(captured);
+	}
+	
 	public void invalidMoveText(){
 		if(displayText){
 			System.out.println("The entered move is not valid.");
@@ -189,5 +203,10 @@ public class Operations {
 			return false;
 		}
 		return true;
+	}
+
+	public boolean checkForMate(Turn turn) {
+		Player player = turn == Turn.Player1 ? whitePlayer : blackPlayer;
+		return !player.checkForMate().getMate();
 	}
 }

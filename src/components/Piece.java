@@ -4,6 +4,8 @@ import game.Operations;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import moveDecorators.ActualMove;
+import utility.ErrorMessage;
 import utility.MoveBuilder;
 import utility.MoveTypeAndConstraints;
 import constraints.MoveConstraint;
@@ -111,8 +113,7 @@ public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, Pi
 	}
 
 	@Override
-	public boolean updatePiece(Space destination) {
-System.out.println("Piece.updatePiece called on piece of type " + this.type);
+	public boolean updateOpposingPiece(Space destination) {
 		return MoveBuilder.buildMoveObject(space, destination, ops) == null;
 	}
 
@@ -136,5 +137,24 @@ System.out.println("Piece.updatePiece called on piece of type " + this.type);
 		}
 		return true;
 		
+	
+	}
+
+	public boolean tryEveryValidMove() {
+	System.out.println("In tryEveryValidMove");
+		for(MoveTypeAndConstraints mAndC : moveTypesAndConstraints){
+			ActualMove move = MoveBuilder.buildMoveObject(space, mAndC.getMoveType(), ops);
+			while(move != null){
+				Piece captured = Operations.movePiece(move, ops);
+				for(KingObserver k : kings){
+					System.out.println(this);
+					if(!k.updateKing(this))
+						return false;
+				}
+				Operations.undoMove(move, captured, ops);
+				move = MoveBuilder.buildMoveObject(move, mAndC.getMoveType(), ops);
+			}
+		}
+		return true;
 	}
 }

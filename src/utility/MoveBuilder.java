@@ -8,33 +8,64 @@ import definitions.*;
 public class MoveBuilder{
 	private MoveBuilder(){}
 	
+	public static ActualMove buildMoveObject(Space space, MoveType moveType, Operations ops) {
+		Color color = space.getPiece().getColor();
+		int rankOffset = moveType.getRankOffset();
+		int fileOffset = moveType.getFileOffset();
+		if(moveType != MoveType.KingSideCastle && moveType != MoveType.ReverseKingSideCastle &&
+		   moveType != MoveType.QueenSideCastle && moveType != MoveType.ReverseQueenSideCastle &&
+		   color == Color.Black){
+			rankOffset = -rankOffset;
+			fileOffset = -fileOffset;
+		}
+		Space destination = getDestination(space, rankOffset, fileOffset);
+		if(destination != null)
+			return buildMoveObject(space, destination, ops);
+		else
+			return null;
+	}
 	
+	private static Space getDestination(Space space, int rankOffset, int fileOffset) {
+		while(space != null && (rankOffset != 0 || fileOffset != 0)){
+			if(rankOffset > 0){
+				space = space.getSpaceForward();
+				rankOffset--;
+			}
+			else if(rankOffset < 0){
+				space = space.getSpaceBackward();
+				rankOffset++;
+			}
+			else if(fileOffset > 0){
+				space = space.getSpaceRight();
+				fileOffset--;
+			}
+			else if(fileOffset < 0){
+				space = space.getSpaceLeft();
+				fileOffset++;
+			}
+		}
+		return space;
+	}
+
 	// returns null if a valid move cannot be created
 	public static ActualMove buildMoveObject(Space initial, Space destination, Operations ops){
+		
+		
 		Piece pieceToMove = initial.getPiece();
 		if(pieceToMove == null)
 			return null;
-		Color pieceColor = pieceToMove.getColor();
+		
+		Move move = new Touch(initial);
 		Rank rank = initial.getRank();
 		File file = initial.getFile();
 		Rank destinationRank = destination.getRank();
 		File destinationFile = destination.getFile();
-		Move move = new Touch(initial);
 		RankAndFile currentRankAndFile = computeRankAndFile(move, initial);
 		
 		while(move != null && (rank != destinationRank || file != destinationFile)){
-			if(rank == destinationRank)
-				move = moveAlongRank(move, currentRankAndFile, initial, destination, pieceColor, ops);
-			else if(file == destinationFile)
-				move = moveAlongFile(move, currentRankAndFile, initial, destination, pieceColor, ops);
-			else if(Math.abs(rank.ordinal() - destinationRank.ordinal()) == 
-				    Math.abs(file.ordinal() - destinationFile.ordinal()))
-				move = moveAlongDiagonal(move, currentRankAndFile, initial, destination, pieceColor, ops);
-			else
-				move = moveAlongLShape(move, currentRankAndFile, initial, destination, pieceColor, ops);
-			if(move == null){
+			move = selectMove(move, currentRankAndFile, destinationRank, destinationFile, ops);
+			if(move == null)
 				return null;
-			}
 			currentRankAndFile = computeRankAndFile(move, initial);
 			rank = currentRankAndFile.getRank();
 			file = currentRankAndFile.getFile();
@@ -42,7 +73,25 @@ public class MoveBuilder{
 		return (ActualMove) move;
 	}
 
-	private static RankAndFile computeRankAndFile(Move move, Space initial){
+	public static ActualMove selectMove(Move move, RankAndFile currentRankAndFile, Rank destinationRank, File destinationFile, Operations ops){
+		Rank rank = currentRankAndFile.getRank();
+		File file = currentRankAndFile.getFile();
+		Space initial = move.getInitialSpace();
+		Space destination = getDestination(move.getDestinationSpace(), destinationRank.ordinal() - rank.ordinal(), destinationFile.ordinal() - file.ordinal());
+		Color pieceColor = initial.getPiece().getColor();
+		if(rank == destinationRank)
+			move = moveAlongRank(move, currentRankAndFile, move.getInitialSpace(), destination, pieceColor, ops);
+		else if(file == destinationFile)
+			move = moveAlongFile(move, currentRankAndFile, move.getInitialSpace(), destination, pieceColor, ops);
+		else if(Math.abs(rank.ordinal() - destinationRank.ordinal()) == 
+			    Math.abs(file.ordinal() - destinationFile.ordinal()))
+			move = moveAlongDiagonal(move, currentRankAndFile, initial, destination, pieceColor, ops);
+		else
+			move = moveAlongLShape(move, currentRankAndFile, initial, destination, pieceColor, ops);
+		return (ActualMove) move;
+	}
+	
+	public static RankAndFile computeRankAndFile(Move move, Space initial){
 			return new RankAndFile(Rank.values()[initial.getRank().ordinal() + move.getRankOffset()],
 							   	   File.values()[initial.getFile().ordinal() + move.getFileOffset()]);	
 	}
@@ -105,6 +154,7 @@ public class MoveBuilder{
 	}
 
 	private static Move moveAlongFile(Move move, RankAndFile currentRankAndFile, Space initial, Space destination, Color pieceColor, Operations ops) {
+		System.out.println ( move + " " + currentRankAndFile + " " + initial + " " + destination);
 		int rankOffset = destination.getRank().ordinal() - currentRankAndFile.getRank().ordinal();
 		if(pieceColor == Color.Black)
 			rankOffset = -rankOffset;
@@ -163,5 +213,10 @@ public class MoveBuilder{
 			return MoveCompositor.compositeMoves(move, new MoveRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.Right), ops);
 		else // fileOffset < 0
 			return MoveCompositor.compositeMoves(move, new MoveLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.Left), ops);
+	}
+
+	public static ActualMove buildMoveObject(ActualMove move, MoveType moveType, Operations ops) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

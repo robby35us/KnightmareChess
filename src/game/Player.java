@@ -1,5 +1,6 @@
 package game;
 
+import utility.ErrorMessage;
 import components.King;
 import components.Piece;
 import components.PlayerSet;
@@ -15,15 +16,13 @@ public class Player {
 		this.color = color;
 		this.set = set;
 		this.opposingKing = opposingKing;
-	//	set.setKingObserver(opposingKing);
 		for(Piece p : set){
-			opposingKing.registerPieceObserver(p);
+			opposingKing.registerOpposingPieceObserver(p);
 		}
 	}
 	
 	public boolean losePiece(Piece piece){
-		opposingKing.removePieceObserver(piece);
-		//piece.removeKingObserver(opposingKing);
+		opposingKing.removeOpposingPieceObserver(piece);
 		piece.removeKingObserver(set.getKing());
 		return set.removePiece(piece);
 	}
@@ -33,8 +32,20 @@ public class Player {
 	}
 
 	public void addPiece(Piece piece) {
-		opposingKing.registerPieceObserver(piece);
+		opposingKing.registerOpposingPieceObserver(piece);
 		piece.registerKingObserver(set.getKing());
 		set.addPiece(piece);
+	}
+
+	public ErrorMessage checkForMate() {
+		for(Piece p : set){
+			if(!p.tryEveryValidMove()){
+				ErrorMessage result = new ErrorMessage();
+				result.setMate();
+				return result; 
+				// This code assumes one king
+			}
+		}
+		return new ErrorMessage();
 	}
 }

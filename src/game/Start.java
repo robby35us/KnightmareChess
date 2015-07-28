@@ -25,11 +25,13 @@ public class Start {
 			
 			// MoveBuilder.buildMoveObject() returns null, this doesn't run and the program exits.
 			// This isn't always the desired behavior.
-			if(move != null && fw.meetsUniversalConstraints(move, turn) && Operations.makeMove(move, turn, fw.getOps())){
+			if(move != null && fw.meetsUniversalConstraints(move, turn) && !Operations.makeMove(move, turn, fw.getOps()).hasError()){
 				if(turn == Turn.Player1)
 					turn = Turn.Player2;
 				else
-					turn = Turn. Player1;
+					turn = Turn.Player1;
+				if(!fw.getOps().checkForMate(turn))
+					break;
 			}
 		}while(move != null);
 	}

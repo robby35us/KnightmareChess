@@ -3,5 +3,5 @@ import components.Space;
 
 public interface PieceObserver {
 	
-	public boolean updatePiece(Space destination);
+	public boolean updateOpposingPiece(Space destination);
 }
