@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import moveDecorators.ActualMove;
 
+import utility.ErrorMessage;
 import utility.MoveInput;
 import definitions.Color;
 import definitions.IOFramework;
@@ -27,8 +28,8 @@ public class ConsoleIO implements IOFramework {
 	}
 
 	@Override
-	public MoveInput getMoveInput(Color color) {
-		return ops.getMoveInput(color, new Scanner(System.in));
+	public MoveInput getMoveInput(Color color, ErrorMessage message) {
+		return ops.getMoveInput(color, new Scanner(System.in), message);
 	}
 
 	@Override
@@ -37,7 +38,12 @@ public class ConsoleIO implements IOFramework {
 	}
 
 	@Override
-	public boolean meetsUniversalConstraints(ActualMove move, Turn turn) {
-		return ops.meetsUniversalConstraints(move, turn);
+	public boolean meetsUniversalConstraints(ActualMove move, Turn turn, ErrorMessage message) {
+		return ops.meetsUniversalConstraints(move, turn, message);
+	}
+
+	@Override
+	public void displayMessage(ErrorMessage message) {
+		System.out.println(message);
 	}
 }

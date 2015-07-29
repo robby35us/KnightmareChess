@@ -6,6 +6,7 @@ import components.Piece;
 import components.PlayerSet;
 
 import definitions.Color;
+import definitions.PieceType;
 
 public class Player {
 	Color color;
@@ -37,15 +38,17 @@ public class Player {
 		set.addPiece(piece);
 	}
 
-	public ErrorMessage checkForMate() {
+	// this code seems to be incorrect
+	public void checkForMate(ErrorMessage message) {
+		boolean isMate = true;
 		for(Piece p : set){
-			if(!p.tryEveryValidMove()){
-				ErrorMessage result = new ErrorMessage();
-				result.setMate();
-				return result; 
-				// This code assumes one king
+			if(p.tryEveryValidMove()){
+				isMate = false;
+				break;
 			}
 		}
-		return new ErrorMessage();
+		if(isMate)
+			message.setMate();
+		System.out.println(message + " in Player.checkForMate().");
 	}
 }

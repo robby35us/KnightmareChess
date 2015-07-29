@@ -40,14 +40,6 @@ public class Operations {
 	
 	public void setupTestGame(Board board){
 		this.board = board;
-		
-		// how can we get rid of this code without everything breaking?!
-		factory = new PieceFactory(board);
-		PlayerSet [] sets = new PlayerSet[2];
-		sets[0] = new PlayerSet(factory, Color.White);
-		sets[1] = new PlayerSet(factory, Color.Black);
-		whitePlayer = new Player(sets[0], Color.White, sets[1].getKing());
-		blackPlayer = new Player(sets[1], Color.Black, sets[0].getKing());
 	}
 
 	public void prettyPrintBoard() {
@@ -99,33 +91,27 @@ public class Operations {
 		}
 	}
 
-	public MoveInput getMoveInput(Color color, Scanner in) {
+	public MoveInput getMoveInput(Color color, Scanner in, ErrorMessage message) {
 		String input = null;
-		while(input == null){
-			if(displayText)
-				System.out.println("Player " + (color.ordinal() + 1) + ", enter next move (ex. e2 e4):");
-			input = in.next();
-			Space init = getSpace(input);
-			if(init == null){
-				if(exitCondition(input))
-					return null;
-				prettyPrintBoard();
-				invalidEntryText(input);
-				continue;
-			}
-			input = in.next();
-			Space dest = getSpace(input);
-			if(dest == null){
-				prettyPrintBoard();
-				invalidEntryText(input);
-				continue;
-			}
-			return new MoveInput(init, dest);
+		if(displayText)
+			System.out.println("Player " + (color.ordinal() + 1) + ", enter next move (ex. e2 e4):");
+		input = in.next();
+		Space init = getSpace(input);
+		if(init == null){
+			if(!exitCondition(input))
+				message.setInvalidInput();
+			return null;
 		}
-		return null;
+		input = in.next();
+		Space dest = getSpace(input);
+		if(dest == null){
+			message.setInvalidInput();
+			return null;
+		}
+		return new MoveInput(init, dest);
 	}
 
-	private void invalidEntryText(String input) {
+	public void invalidEntryText(String input) {
 		if(displayText)
 			System.out.println(input + " is not a valid space identifier.");
 	}
@@ -147,39 +133,49 @@ public class Operations {
 		 return input.charAt(0) == 'q' || input.charAt(0) == 'Q';
 	}
 
-	public static ErrorMessage makeMove(ActualMove move, Turn turn, Operations ops) {
+	public static ErrorMessage makeMove(ActualMove move, Turn turn, Operations ops, ErrorMessage message) {
 		Piece moving = move.getInitialSpace().getPiece();
 		Piece captured = movePiece(move, ops);
 		Player opposite = turn == Turn.Player1 ? ops.blackPlayer : ops.whitePlayer;
 		if(captured != null){
+			if(opposite != null)
 			opposite.losePiece(captured);
 			captured.setSpace(null);
 		}
 		if(!moving.notifyKingObservers()){
 			Operations.undoMove(move, captured, ops);
 			if(captured != null){
-				(captured.getColor() == Color.White ? ops.whitePlayer : ops.blackPlayer).addPiece(captured);
+				opposite = captured.getColor() == Color.White ? ops.whitePlayer : ops.blackPlayer;
+				if(opposite != null)
+					opposite.addPiece(captured);
 				captured.setSpace(move.getDestinationSpace());
 			}
-			ErrorMessage result = new ErrorMessage();
-			result.setMate();
-			return result;
+			message.setCheck();
+			return message;
 		}
-		 //check the opposite player for mate
 		return new ErrorMessage();
 	}
 
 	public static Piece movePiece(ActualMove move, Operations ops){
+		System.out.println("In movePiece");
+		ops.prettyPrintBoard();
 		Piece moving = move.getInitialSpace().getPiece();
 		Piece captured = move.getDestinationSpace().getPiece();
 		move.getDestinationSpace().changePiece(moving);
 		move.getInitialSpace().changePiece(null);
+
+		System.out.println("After movePiece - captured = " + captured);
+		ops.prettyPrintBoard();
 		return captured;
 	}
 	
 	public static void undoMove(ActualMove move, Piece captured, Operations ops){
+		System.out.println("In undoMove");
+		ops.prettyPrintBoard();
 		move.getInitialSpace().changePiece(move.getDestinationSpace().getPiece());
 		move.getDestinationSpace().changePiece(captured);
+		System.out.println("After undoMove - captured = " + captured);
+		ops.prettyPrintBoard();
 	}
 	
 	public void invalidMoveText(){
@@ -188,7 +184,7 @@ public class Operations {
 			System.out.println("Please try again.");
 		}
 	}
-	public boolean meetsUniversalConstraints(ActualMove move, Turn turn) {
+	public boolean meetsUniversalConstraints(ActualMove move, Turn turn, ErrorMessage message) {
 		Space init = move.getInitialSpace();
 		Space dest = move.getDestinationSpace();
 		Piece moving = init.getPiece();
@@ -205,8 +201,10 @@ public class Operations {
 		return true;
 	}
 
-	public boolean checkForMate(Turn turn) {
+	public ErrorMessage checkForMate(Turn turn, ErrorMessage message) {
 		Player player = turn == Turn.Player1 ? whitePlayer : blackPlayer;
-		return !player.checkForMate().getMate();
+		if(whitePlayer != null)
+			player.checkForMate(message);
+		return message;
 	}
 }

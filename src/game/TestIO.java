@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import moveDecorators.ActualMove;
 import components.Board;
+import utility.ErrorMessage;
 import utility.MoveInput;
 import definitions.Color;
 import definitions.IOFramework;
@@ -21,6 +22,12 @@ public class TestIO implements IOFramework {
 		this.showDisplay = showDisplay;
 	}
 	
+	public TestIO(boolean showDisplay) {
+		this.ops = new Operations(showDisplay);
+		board = null;
+		this.showDisplay = showDisplay;
+	}
+
 	@Override
 	public Operations getOps() {
 		return ops;
@@ -37,18 +44,26 @@ public class TestIO implements IOFramework {
 	}
 	
 	@Override
-	public MoveInput getMoveInput(Color color) {
-		return ops.getMoveInput(color, input);
+	public MoveInput getMoveInput(Color color, ErrorMessage message) {
+		return ops.getMoveInput(color, input, message);
 	}
 
 	@Override
 	public void setupGame() {
-		ops.setupTestGame(board);
+		if(board != null)
+			ops.setupTestGame(board);
+		else
+			ops.setupGame();
 	}
 
 	@Override
-	public boolean meetsUniversalConstraints(ActualMove move, Turn turn) {
-		return ops.meetsUniversalConstraints(move, turn);
+	public boolean meetsUniversalConstraints(ActualMove move, Turn turn, ErrorMessage message) {
+		return ops.meetsUniversalConstraints(move, turn, message);
+	}
+
+	@Override
+	public void displayMessage(ErrorMessage message) {
+		return;
 	}
 
 }

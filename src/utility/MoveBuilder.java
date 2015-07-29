@@ -20,7 +20,7 @@ public class MoveBuilder{
 		}
 		Space destination = getDestination(space, rankOffset, fileOffset);
 		if(destination != null)
-			return buildMoveObject(space, destination, ops);
+			return buildMoveObject(space, destination, ops, new ErrorMessage());
 		else
 			return null;
 	}
@@ -48,31 +48,35 @@ public class MoveBuilder{
 	}
 
 	// returns null if a valid move cannot be created
-	public static ActualMove buildMoveObject(Space initial, Space destination, Operations ops){
-		
-		
+	public static ActualMove buildMoveObject(Space initial, Space destination, Operations ops, ErrorMessage message){
 		Piece pieceToMove = initial.getPiece();
-		if(pieceToMove == null)
+		if(pieceToMove == null){
+			message.setNoPieceToMove();
 			return null;
-		
+		}
 		Move move = new Touch(initial);
-		Rank rank = initial.getRank();
-		File file = initial.getFile();
+		return (ActualMove) buildMoveObject(move,destination,ops,message);
+	}
+
+	public static ActualMove buildMoveObject(Move move, Space destination, Operations ops, ErrorMessage message){
+		Space current = move.getDestinationSpace();
+		Rank rank = current.getRank();
+		File file = current.getFile();
 		Rank destinationRank = destination.getRank();
 		File destinationFile = destination.getFile();
-		RankAndFile currentRankAndFile = computeRankAndFile(move, initial);
+		RankAndFile currentRankAndFile = new RankAndFile(rank, file);
 		
 		while(move != null && (rank != destinationRank || file != destinationFile)){
 			move = selectMove(move, currentRankAndFile, destinationRank, destinationFile, ops);
 			if(move == null)
 				return null;
-			currentRankAndFile = computeRankAndFile(move, initial);
+			currentRankAndFile = computeRankAndFile(move);
 			rank = currentRankAndFile.getRank();
 			file = currentRankAndFile.getFile();
 		}
 		return (ActualMove) move;
 	}
-
+	
 	public static ActualMove selectMove(Move move, RankAndFile currentRankAndFile, Rank destinationRank, File destinationFile, Operations ops){
 		Rank rank = currentRankAndFile.getRank();
 		File file = currentRankAndFile.getFile();
@@ -91,9 +95,9 @@ public class MoveBuilder{
 		return (ActualMove) move;
 	}
 	
-	public static RankAndFile computeRankAndFile(Move move, Space initial){
-			return new RankAndFile(Rank.values()[initial.getRank().ordinal() + move.getRankOffset()],
-							   	   File.values()[initial.getFile().ordinal() + move.getFileOffset()]);	
+	public static RankAndFile computeRankAndFile(Move move){
+			return new RankAndFile(Rank.values()[move.getInitialSpace().getRank().ordinal() + move.getRankOffset()],
+							   	   File.values()[move.getInitialSpace().getFile().ordinal() + move.getFileOffset()]);	
 	}
 		
 	private static Move moveAlongLShape(Move move, RankAndFile currentRankAndFile, Space initial, Space destination, Color pieceColor, Operations ops) {
@@ -154,7 +158,6 @@ public class MoveBuilder{
 	}
 
 	private static Move moveAlongFile(Move move, RankAndFile currentRankAndFile, Space initial, Space destination, Color pieceColor, Operations ops) {
-		System.out.println ( move + " " + currentRankAndFile + " " + initial + " " + destination);
 		int rankOffset = destination.getRank().ordinal() - currentRankAndFile.getRank().ordinal();
 		if(pieceColor == Color.Black)
 			rankOffset = -rankOffset;
@@ -176,8 +179,8 @@ public class MoveBuilder{
 				if(result != null){
 					Space rookDest = initial.getSpaceRight();
 					Space rookInit = destination.getSpaceRight();
-					ActualMove rookMove = buildMoveObject(rookInit, rookDest, ops);
-					Operations.makeMove(rookMove, pieceColor == Color.White ? Turn.Player1 : Turn.Player2, ops);
+					ActualMove rookMove = buildMoveObject(rookInit, rookDest, ops, new ErrorMessage());
+					Operations.makeMove(rookMove, pieceColor == Color.White ? Turn.Player1 : Turn.Player2, ops, new ErrorMessage());
 				}
 				return result; 
 			}
@@ -186,8 +189,8 @@ public class MoveBuilder{
 				if(result != null){
 					Space rookDest = initial.getSpaceLeft();
 					Space rookInit = rookDest.getSpaceLeft().getSpaceLeft().getSpaceLeft();
-					ActualMove rookMove = buildMoveObject(rookInit, rookDest, ops);
-					Operations.makeMove(rookMove, pieceColor == Color.White ? Turn.Player1 : Turn.Player2, ops);
+					ActualMove rookMove = buildMoveObject(rookInit, rookDest, ops, new ErrorMessage());
+					Operations.makeMove(rookMove, pieceColor == Color.White ? Turn.Player1 : Turn.Player2, ops, new ErrorMessage());
 				}
 				return result; 
 			}
@@ -216,7 +219,9 @@ public class MoveBuilder{
 	}
 
 	public static ActualMove buildMoveObject(ActualMove move, MoveType moveType, Operations ops) {
-		// TODO Auto-generated method stub
-		return null;
+		Space dest = getDestination(move.getDestinationSpace(), moveType.getRankOffset(), moveType.getFileOffset());
+		if(dest == null)
+			return null;
+		return buildMoveObject(move, dest, ops, new ErrorMessage());
 	}
 }
