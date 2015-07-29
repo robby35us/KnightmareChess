@@ -1,4 +1,4 @@
-package moveDecorators;
+package moves;
 import definitions.*;
 
 /* MoveBackward.java

@@ -2,7 +2,7 @@ package game;
 
 import java.util.Scanner;
 
-import moveDecorators.ActualMove;
+import moves.ActualMove;
 import components.Board;
 import components.Piece;
 import utility.ErrorMessage;

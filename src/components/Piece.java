@@ -1,13 +1,8 @@
 package components;
 import game.Operations;
-
 import java.util.ArrayList;
-import java.util.Iterator;
-
-import moveDecorators.ActualMove;
-import utility.ErrorMessage;
-import utility.MoveBuilder;
-import utility.MoveTypeAndConstraints;
+import moves.ActualMove;
+import utility.*;
 import constraints.MoveConstraint;
 import definitions.*;
 
@@ -19,8 +14,15 @@ import definitions.*;
  * a list of Constraint objects used to prevent that piece from 
  * making and invalid move). A Piece also keeps track of whether 
  * or not it has been moved away from it's original position.
+ * Piece implements the PieceSubject and PieceObserver interfaces
+ * to assit in keeping a piece from moving into check. When ever 
+ * a Piece object is "moved," it notifies the king(s)
+ * (notifyKingObservers()) which returns if that king has been
+ * placed in check by this move. Each king of this piece's own 
+ * color should be registered/unregistered through the course of
+ * the game to insure appropriate functionality.
  */
-public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, PieceObserver{
+public class Piece implements PieceSubject, PieceObserver{
 	protected PieceType type;
 	protected Color color;
 	protected Space space;
@@ -36,6 +38,13 @@ public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, Pi
 	private ArrayList<KingObserver> kings;
 	private static Operations ops;
 	
+	/* A convenience method to prevent unneccesary passing. 
+	 * Should be called before any of the following:
+	 * updateOpposingPiece() and tryEveryValieMove().
+	 */
+	public static void setOps(Operations ops){
+		Piece.ops = ops;
+	}
 	
 	public Piece(PieceType type, Color color){
 		this.type = type;
@@ -44,9 +53,6 @@ public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, Pi
 		kings = new ArrayList<KingObserver>();
 	}
 	
-	public static void setOps(Operations ops){
-		Piece.ops = ops;
-	}
 	// Public getters 
 	public PieceType getType() {
 		return type;
@@ -60,26 +66,18 @@ public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, Pi
 		return space;
 	}
 	
+	// public setters
 	public void setSpace(Space space){
 		this.space = space;
 	}
 	
-	/* !!? How do we handle the MoveType already being added?!!!
+	/*
 	 * Used to add a new MoveType with cooresponding Constraint objects
-	 * to the Piece's moveTypesAndConstraints.
+	 * to the Piece's moveTypesAndConstraints. WARNING: BEHAVIOR IS NOT
+	 * GUARANTEED FOR DUPLICATE MOVE TYPES!!
 	 */
 	public void addMove(MoveType moveType, MoveConstraint[] constraints){
 		moveTypesAndConstraints.add(new MoveTypeAndConstraints(moveType,constraints));
-	}
-
-	@Override
-	/* !!? DO WE NEED THIS FUNCTIONALITY ?!!
-	 * Returns an Iterator that iterates over the given
-	 * MoveTypes and cooresponding Constraints in a 
-	 * MoveTypesAndConstraints object.
-	 */
-	public Iterator<MoveTypeAndConstraints> iterator() {
-		return moveTypesAndConstraints.iterator();
 	}
 	
 	/*
@@ -113,16 +111,33 @@ public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, Pi
 	}
 
 	@Override
+	/*
+	 * The only method in the PieceObserver interface,
+	 * this method is called by the opposing King
+	 * after that side makes a move. destination is the
+	 * location of the opposing King. Returns true if it
+	 * cannot capture the king, false otherwise.
+	 */
 	public boolean updateOpposingPiece(Space destination) {
 		return MoveBuilder.buildMoveObject(space, destination, ops, new ErrorMessage()) == null;
 	}
 
 	@Override
+	/*
+	 * This method should be called for each king of 
+	 * this piece's own color. Otherwise, the mechanism
+	 * to disallow self-check will not work. 
+	 */
 	public void registerKingObserver(KingObserver o) {
 		kings.add(o);
 	}
 
 	@Override
+	/*
+	 * This method should be called after a duplicate
+	 * king leaves play. Otherwise, the mechanism to
+	 * disallow self-check will not work.
+	 */
 	public void removeKingObserver(KingObserver o) {
 		int index = kings.indexOf(o);
 		if(index >= 0)
@@ -130,65 +145,61 @@ public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, Pi
 	}
 
 	@Override
+	/*
+	 * Notifies each kings of the same color as this 
+	 * piece that this piece has moved. This is the 
+	 * beginning of the mechanism to prevent a player 
+	 * from making a move that would place one of it's
+	 * own kings in check. Returns true if the king
+	 * has not been placed in check.
+	 */
 	public boolean notifyKingObservers() {
 		for(KingObserver k : kings){
-			if(!k.updateKing(this))
+			if(!k.updateKing())
 				return false;
 		}
 		return true;
-		
-	
 	}
 
-	public boolean tryEveryValidMove() {
-//	System.out.println("In tryEveryValidMove");
-//	System.out.println("PieceType = " + type);
-//	ops.prettyPrintBoard();
+	/*
+	 *  This method returns true if this piece can make
+	 *  a valid move. False otherwise.
+	 */
+	public boolean checkForValidMove() {
+		// for each MoveType that this piece can make
 		for(MoveTypeAndConstraints mAndC : moveTypesAndConstraints){
-//			System.out.println("Trying moveType " + mAndC.getMoveType());
-//			ops.prettyPrintBoard();
 			
+			// reset message
 			ErrorMessage message = new ErrorMessage();
+			
+			// get the Move object
 			ActualMove move = MoveBuilder.buildMoveObject(space, mAndC.getMoveType(), ops, message);
+			
 			while(move != null && ops.meetsUniversalConstraints(move, 
 					(this.getColor() == Color.White) ? Turn.Player1 : Turn.Player2, 
 							message)){
+				
 				Piece captured = Operations.movePiece(move, ops);
-				for(KingObserver k : kings){
-//					System.out.println(this.type);
-//					System.out.println(this.space);
-//					ops.prettyPrintBoard();
-					
-					
-					if(k.updateKing(this)){
-						//System.out.println(this + " could make a move without checking the king");
+
+				// check for self-check
+				for(KingObserver k : kings){	
+					// if not self-check, this move is valid
+					if(k.updateKing()){
 						Operations.undoMove(move, captured, ops);
+						
+						// we have found a valid move
 						return true;
 					}
-					
-					
-//					System.out.println(this.type);
-//					System.out.println(this.space);
-//					ops.prettyPrintBoard();
 				}
 				Operations.undoMove(move, captured, ops);
+				
+				// repeat the move on top of the last move
+				// NOTE: this code assume only same move combinations!!
+				// also, this code seems to work by accident, it should be changed
 				move = MoveBuilder.buildMoveObject(move, mAndC.getMoveType(), ops, message);
-			}
-			
-			
-//			System.out.println("Done trying moveType " + mAndC.getMoveType());
-//			ops.prettyPrintBoard();
-			
-			
+			}	
 		}
-		
-		
-//		System.out.println("Returning from tryEveryValidMove");
-//		System.out.println(this.getType());
-//		System.out.println(this.space);
-//		ops.prettyPrintBoard();
-		
-		
+		// there are no valid moves for this piece.
 		return false;
 	}
 }

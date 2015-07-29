@@ -2,7 +2,7 @@ package constraints;
 import components.Space;
 
 import definitions.PieceType;
-import moveDecorators.ActualMove;
+import moves.ActualMove;
 import moves.Move;
 
 

@@ -3,7 +3,7 @@ import components.Board;
 import components.Piece;
 import components.Space;
 
-import moveDecorators.ActualMove;
+import moves.ActualMove;
 import moves.Move;
 
 

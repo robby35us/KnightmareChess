@@ -1,6 +1,6 @@
 package factory;
 import definitions.*;
-import moveDecorators.*;
+import moves.*;
 
 public class MoveFactory {
 

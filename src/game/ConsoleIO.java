@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import components.Piece;
 
-import moveDecorators.ActualMove;
+import moves.ActualMove;
 
 import utility.ErrorMessage;
 import utility.MoveInput;

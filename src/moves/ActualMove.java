@@ -1,6 +1,5 @@
-package moveDecorators;
+package moves;
 
-import moves.Move;
 import definitions.Color;
 
 /* MoveActual.java

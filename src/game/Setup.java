@@ -1,4 +1,4 @@
-package setup;
+package game;
 import java.util.Iterator;
 
 import components.*;

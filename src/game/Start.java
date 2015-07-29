@@ -2,7 +2,7 @@ package game;
 
 import java.io.IOException;
 
-import moveDecorators.ActualMove;
+import moves.ActualMove;
 import utility.ErrorMessage;
 import utility.MoveBuilder;
 import utility.MoveInput;

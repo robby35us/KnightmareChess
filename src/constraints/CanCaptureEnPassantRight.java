@@ -1,10 +1,10 @@
 package constraints;
 
 import utility.MoveCompositor;
-import moveDecorators.ActualMove;
-import moveDecorators.MoveEnPassantRight;
-import moveDecorators.MoveForwardTwo;
+import moves.ActualMove;
 import moves.Move;
+import moves.MoveEnPassantRight;
+import moves.MoveForwardTwo;
 
 import components.Piece;
 import components.Space;

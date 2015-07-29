@@ -1,7 +1,7 @@
 package constraints;
 import components.Space;
 
-import moveDecorators.ActualMove;
+import moves.ActualMove;
 import moves.Move;
 
 

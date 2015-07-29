@@ -37,10 +37,15 @@ public class PlayerSet implements Iterable<Piece>{
 		pieces.add(factory.makePiece(PieceType.Rook, color));
 		for(int i = 0; i < 8; i++)
 			pieces.add(factory.makePiece(PieceType.Pawn, color));
-		
+	
+		// the king is registered as an observer of each piece
 		setKingObserver(king);
 	}
 
+	/*
+	 * Registers the given king as an observer for each
+	 * piece in the set.
+	 */
 	public void setKingObserver(King king){
 		for(Piece p : pieces){
 			p.registerKingObserver(king);
@@ -72,6 +77,10 @@ public class PlayerSet implements Iterable<Piece>{
 		return newPiece;
 	}
 	
+	/*
+	 * Adds the given piece to the set. Provided to support
+	 * the undo function.
+	 */
 	public void addPiece(Piece piece) {
 		pieces.add(piece);
 	}

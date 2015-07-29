@@ -2,20 +2,20 @@ package game;
 
 import java.util.Scanner;
 
-import setup.Setup;
 import utility.ErrorMessage;
 import utility.MoveCompositor;
 import utility.MoveInput;
 import components.Board;
 import components.Piece;
+import components.Player;
 import components.PlayerSet;
 import components.Space;
 
 import definitions.*;
 import factory.PieceFactory;
-import moveDecorators.ActualMove;
-import moveDecorators.MoveEnPassantLeft;
-import moveDecorators.MoveEnPassantRight;
+import moves.ActualMove;
+import moves.MoveEnPassantLeft;
+import moves.MoveEnPassantRight;
 
 public class Operations {
 	private Board board;

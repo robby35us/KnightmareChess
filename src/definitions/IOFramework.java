@@ -6,7 +6,7 @@ package definitions;
 import components.Piece;
 
 import game.Operations;
-import moveDecorators.ActualMove;
+import moves.ActualMove;
 import utility.ErrorMessage;
 import utility.MoveInput;
 

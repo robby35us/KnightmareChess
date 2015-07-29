@@ -1,4 +1,4 @@
-package moveDecorators;
+package moves;
 import definitions.Color;
 import definitions.MoveType;
 

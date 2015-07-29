@@ -3,7 +3,7 @@ import game.Operations;
 import components.Space;
 import constraints.MoveConstraint;
 
-import moveDecorators.ActualMove;
+import moves.ActualMove;
 import moves.Move;
 
 
