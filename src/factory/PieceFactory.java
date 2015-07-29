@@ -17,6 +17,8 @@ public class PieceFactory {
 	private CanQueenCastle cqc;
 	private CannotPassPiece cpp;
 	private NoPieceBehind npb;
+	private CanCaptureEnPassantLeft ccepl;
+	private CanCaptureEnPassantRight ccepr;
 		
 	public PieceFactory(Board board){
 		mbob = new MustBeOnBoard(board);
@@ -31,6 +33,8 @@ public class PieceFactory {
 		cqc = new CanQueenCastle();
 		cpp = new CannotPassPiece();
 		npb = new NoPieceBehind(board);
+		ccepl = new CanCaptureEnPassantLeft();
+		ccepr = new CanCaptureEnPassantRight();
 	}
 	
 	public Piece makePiece(PieceType type, Color color){
@@ -44,6 +48,8 @@ public class PieceFactory {
 						newPiece.addMove(MoveType.ForwardLeft, new MoveConstraint[]{mbob,sm,mc});
 						newPiece.addMove(MoveType.ForwardRight, new MoveConstraint[]{mbob,sm,mc});
 						newPiece.addMove(MoveType.ForwardTwo, new MoveConstraint[]{mbob, sm, nbm, cc, npb});
+						newPiece.addMove(MoveType.EnPassantRight, new MoveConstraint[]{mbob, sm, ccepr});
+						newPiece.addMove(MoveType.EnPassantLeft, new MoveConstraint[]{mbob, sm, ccepl});
 				break;
 			case Knight : newPiece.addMove(MoveType.LForwardLeft, new MoveConstraint[]{mbob,sm});
 						  newPiece.addMove(MoveType.LForwardRight, new MoveConstraint[]{mbob,sm});

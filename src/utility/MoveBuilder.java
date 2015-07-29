@@ -147,9 +147,15 @@ public class MoveBuilder{
 		}
 		if(rankOffset > 0)
 			if(fileOffset > 0)
-				return MoveCompositor.compositeMoves(move, new MoveForwardRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ForwardRight), ops, message);
+				if(initial.getPiece().getType() == PieceType.Pawn && destination.getPiece() == null)
+					return MoveCompositor.compositeMoves(move, new MoveEnPassantRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.EnPassantRight), ops, message);
+				else
+					return MoveCompositor.compositeMoves(move, new MoveForwardRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ForwardRight), ops, message);
 			else // fileOffset < 0
-				return MoveCompositor.compositeMoves(move, new MoveForwardLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ForwardLeft), ops, message);
+				if(initial.getPiece().getType() == PieceType.Pawn && destination.getPiece() == null)
+					return MoveCompositor.compositeMoves(move, new MoveEnPassantLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.EnPassantLeft), ops, message);
+				else
+					return MoveCompositor.compositeMoves(move, new MoveForwardLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ForwardLeft), ops, message);
 		else // rankOffset < 0
 			if(fileOffset > 0)
 				return MoveCompositor.compositeMoves(move, new MoveBackwardRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.BackwardRight), ops, message);

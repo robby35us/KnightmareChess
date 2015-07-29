@@ -56,6 +56,7 @@ public class ConsoleIO implements IOFramework {
 		else if(message.getWrongColorCaptured()){
 			System.out.println("This piece cannot capture a piece of the same color.");
 		}
-		ops.invalidMoveText();
+		if(message.hasError())
+			ops.invalidMoveText();
 	}
 }

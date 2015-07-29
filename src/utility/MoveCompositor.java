@@ -25,11 +25,14 @@ public class MoveCompositor {
 				message.setConstraintNotMet();
 				return null;
 			}
-		prevMove = nextMove;
 		return nextMove.setLastMove(lastMove);
 	}
 	
 	public static ActualMove getPreviousMove(){
 		return prevMove;
+	}
+	
+	public static void setPreviousMove(ActualMove prevMove){
+		MoveCompositor.prevMove = prevMove;
 	}
 }

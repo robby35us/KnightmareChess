@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import setup.Setup;
 import utility.ErrorMessage;
+import utility.MoveCompositor;
 import utility.MoveInput;
 import components.Board;
 import components.Piece;
@@ -13,6 +14,8 @@ import components.Space;
 import definitions.*;
 import factory.PieceFactory;
 import moveDecorators.ActualMove;
+import moveDecorators.MoveEnPassantLeft;
+import moveDecorators.MoveEnPassantRight;
 
 public class Operations {
 	private Board board;
@@ -153,6 +156,7 @@ public class Operations {
 			message.setCheck();
 			return message;
 		}
+		MoveCompositor.setPreviousMove(move);
 		return message;
 	}
 
@@ -160,7 +164,14 @@ public class Operations {
 //		System.out.println("In movePiece");
 //		ops.prettyPrintBoard();
 		Piece moving = move.getInitialSpace().getPiece();
-		Piece captured = move.getDestinationSpace().getPiece();
+		Space capturedSpace;
+		Space dest = move.getDestinationSpace();
+		if(move.getClass() == MoveEnPassantRight.class || move.getClass() == MoveEnPassantLeft.class)
+			capturedSpace = (moving.getColor() == Color.White) ? dest.getSpaceBackward() : dest.getSpaceForward();
+		else
+			capturedSpace = dest;
+		Piece captured = capturedSpace.getPiece();
+		capturedSpace.changePiece(null);
 		move.getDestinationSpace().changePiece(moving);
 		move.getInitialSpace().changePiece(null);
 
@@ -172,8 +183,16 @@ public class Operations {
 	public static void undoMove(ActualMove move, Piece captured, Operations ops){
 //		System.out.println("In undoMove");
 //		ops.prettyPrintBoard();
-		move.getInitialSpace().changePiece(move.getDestinationSpace().getPiece());
-		move.getDestinationSpace().changePiece(captured);
+		Piece moving = move.getDestinationSpace().getPiece();
+		Space capturedSpace;
+		Space dest = move.getDestinationSpace();
+		if(move.getClass() == MoveEnPassantRight.class || move.getClass() == MoveEnPassantLeft.class)
+			capturedSpace = (moving.getColor() == Color.White) ? dest.getSpaceBackward() : dest.getSpaceForward();
+		else
+			capturedSpace = dest;
+		move.getInitialSpace().changePiece(moving);
+		dest.changePiece(null);
+		capturedSpace.changePiece(captured);
 //		System.out.println("After undoMove - captured = " + captured);
 //		ops.prettyPrintBoard();
 	}
