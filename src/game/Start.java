@@ -35,19 +35,33 @@ public class Start {
 			}
 			// MoveBuilder.buildMoveObject() returns null, this doesn't run and the program exits.
 			// This isn't always the desired behavior.
-			if(move != null && fw.meetsUniversalConstraints(move, turn, message) && !Operations.makeMove(move, turn, fw.getOps(), message).hasError()){
-				if(turn == Turn.Player1)
-					turn = Turn.Player2;
-				else
-					turn = Turn.Player1;
-//				System.out.println("Board before check for mate");
-//				fw.displayBoard();
-				if(!message.hasError() && fw.getOps().checkForMate(turn, message).hasError()){
-//					System.out.println("Breaking from while loop in Start.playGame()");
-					break;
+			if(move != null && fw.meetsUniversalConstraints(move, turn, message)){
+				Operations.makeMove(move, turn, fw.getOps(), message);
+				if(message.getPromotePawn()){
+//					System.out.println("Before pawn promotion");
+//					fw.displayBoard();
+					if(fw.promotePawn(move.getDestinationSpace().getPiece())){
+						message = new ErrorMessage(); // clear error message
+					}
+					else
+						message.setUnableToPromotePawn();
+//					System.out.println("After pawn promotion");
+//					fw.displayBoard();
 				}
-//				System.out.println("Board after check for mate");
-//				fw.displayBoard();
+				if(!message.hasError()){
+					if(turn == Turn.Player1)
+						turn = Turn.Player2;
+					else
+						turn = Turn.Player1;
+//					System.out.println("Board before check for mate");
+//					fw.displayBoard();
+					if(/*doesNotHaveError &&*/ fw.getOps().checkForMate(turn, message).hasError()){
+	//					System.out.println("Breaking from while loop in Start.playGame()");
+						break;
+					}
+	//				System.out.println("Board after check for mate");
+	//				fw.displayBoard();
+				}
 			}
 			if(message.hasError())
 				fw.displayMessage(message);

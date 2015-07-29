@@ -2,6 +2,8 @@ package game;
 
 import java.util.Scanner;
 
+import components.Piece;
+
 import moveDecorators.ActualMove;
 
 import utility.ErrorMessage;
@@ -12,6 +14,7 @@ import definitions.Turn;
 
 public class ConsoleIO implements IOFramework {
 	private Operations ops;
+	private Scanner input = new Scanner(System.in);
 	
 	public ConsoleIO(){
 		ops = new Operations(true);
@@ -29,7 +32,7 @@ public class ConsoleIO implements IOFramework {
 
 	@Override
 	public MoveInput getMoveInput(Color color, ErrorMessage message) {
-		return ops.getMoveInput(color, new Scanner(System.in), message);
+		return ops.getMoveInput(color, input, message);
 	}
 
 	@Override
@@ -58,5 +61,23 @@ public class ConsoleIO implements IOFramework {
 		}
 		if(message.hasError())
 			ops.invalidMoveText();
+	}
+
+	@Override
+	public boolean promotePawn(Piece moving) {
+		try{
+			while(true){
+				System.out.println("Choose type to promote pawn to - Q, R, B, or K:");
+				if(ops.promotePawn(moving, input)){
+					
+					return true;
+				}
+				else
+					System.out.println("Please try again.");
+			}
+		}	
+		catch(Exception e){
+			return false;
+		}
 	}
 }

@@ -3,6 +3,8 @@ package definitions;
 //import components.Space;
 
 //import moveDecorators.ActualMove;
+import components.Piece;
+
 import game.Operations;
 import moveDecorators.ActualMove;
 import utility.ErrorMessage;
@@ -15,6 +17,7 @@ public interface IOFramework {
 	public void setupGame();
 	public boolean meetsUniversalConstraints(ActualMove move, Turn turn, ErrorMessage message);
 	public void displayMessage(ErrorMessage message);
+	public boolean promotePawn(Piece moving);
 
 //	public ActualMove buildMoveObject(Space init, Space dest, Operations ops);
 }

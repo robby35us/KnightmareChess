@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import moveDecorators.ActualMove;
 import components.Board;
+import components.Piece;
 import utility.ErrorMessage;
 import utility.MoveInput;
 import definitions.Color;
@@ -64,6 +65,11 @@ public class TestIO implements IOFramework {
 	@Override
 	public void displayMessage(ErrorMessage message) {
 		return;
+	}
+
+	@Override
+	public boolean promotePawn(Piece moving){
+		return ops.promotePawn(moving, input);
 	}
 
 }

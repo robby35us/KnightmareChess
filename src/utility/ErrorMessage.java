@@ -13,6 +13,8 @@ public class ErrorMessage {
 	private boolean invalidInput = false;
 	private boolean noPieceToMove = false;
 	private boolean constraintNotMet = false;
+	private boolean promotePawn = false;
+	private boolean unableToPromotePawn = false;
 	
 	@Override
 	public String toString(){
@@ -40,6 +42,10 @@ public class ErrorMessage {
 				output += "No piece to move reported\n";
 			if(constraintNotMet)
 				output += "Constraint not met reported\n";
+			if(promotePawn)
+				output += "Pawn promotion reported\n";
+			if(unableToPromotePawn)
+				output += "Pawn promotion fail reported\n";
 		}
 		return output;
 		
@@ -136,5 +142,23 @@ public class ErrorMessage {
 	
 	public boolean getConstraintNotMet(){
 		return constraintNotMet;
+	}
+
+	public void setPromotePawn() {
+		promotePawn = true;
+		noError = false;
+	}
+	
+	public boolean getPromotePawn(){
+		return promotePawn;
+	}
+
+	public void setUnableToPromotePawn() {
+		unableToPromotePawn = true;
+		noError = false;// TODO Auto-generated method stub
+	}
+	
+	public boolean getUnableToPromotePawn(){
+		return unableToPromotePawn;
 	}
 }

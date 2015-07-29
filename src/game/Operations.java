@@ -156,8 +156,45 @@ public class Operations {
 			message.setCheck();
 			return message;
 		}
+		if(moving.getType() == PieceType.Pawn && 
+		   (moving.getColor() == Color.White && moving.getSpace().getRank() == Rank.Eight) ||
+		   (moving.getColor() == Color.Black && moving.getSpace().getRank() == Rank.One))
+			message.setPromotePawn();
 		MoveCompositor.setPreviousMove(move);
 		return message;
+	}
+
+	public boolean promotePawn(Piece moving, Scanner in) {
+		String input = in.next();
+		char selection = input.charAt(0);
+		PieceType replacementType;
+		switch(selection){
+			case 'Q':
+			case 'q':
+				replacementType = PieceType.Queen;
+				break;
+			case 'R':
+			case 'r':
+				replacementType = PieceType.Rook;
+				break;
+			case 'K' :
+			case 'k' :
+				replacementType = PieceType.Knight;
+				break;
+			case 'B' :
+			case 'b' :
+				replacementType = PieceType.Bishop;
+				break;
+			default :
+				return false;
+		}
+		Color color = moving.getColor();
+		Player player = color == Color.White ? whitePlayer : blackPlayer;
+		Piece newPiece = (factory.makePiece(replacementType, color));
+		moving.getSpace().changePiece(newPiece);
+		player.losePiece(moving);
+		player.addPiece(newPiece);
+		return true;
 	}
 
 	public static Piece movePiece(ActualMove move, Operations ops){
