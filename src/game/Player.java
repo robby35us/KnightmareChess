@@ -6,7 +6,6 @@ import components.Piece;
 import components.PlayerSet;
 
 import definitions.Color;
-import definitions.PieceType;
 
 public class Player {
 	Color color;
@@ -49,6 +48,6 @@ public class Player {
 		}
 		if(isMate)
 			message.setMate();
-		System.out.println(message + " in Player.checkForMate().");
+//		System.out.println(message + " in Player.checkForMate().");
 	}
 }

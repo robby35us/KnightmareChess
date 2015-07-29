@@ -141,52 +141,52 @@ public class Piece implements Iterable<MoveTypeAndConstraints>, PieceSubject, Pi
 	}
 
 	public boolean tryEveryValidMove() {
-	System.out.println("In tryEveryValidMove");
-	System.out.println("PieceType = " + type);
-	ops.prettyPrintBoard();
+//	System.out.println("In tryEveryValidMove");
+//	System.out.println("PieceType = " + type);
+//	ops.prettyPrintBoard();
 		for(MoveTypeAndConstraints mAndC : moveTypesAndConstraints){
-			System.out.println("Trying moveType " + mAndC.getMoveType());
-			ops.prettyPrintBoard();
+//			System.out.println("Trying moveType " + mAndC.getMoveType());
+//			ops.prettyPrintBoard();
 			
-			
-			ActualMove move = MoveBuilder.buildMoveObject(space, mAndC.getMoveType(), ops);
+			ErrorMessage message = new ErrorMessage();
+			ActualMove move = MoveBuilder.buildMoveObject(space, mAndC.getMoveType(), ops, message);
 			while(move != null && ops.meetsUniversalConstraints(move, 
 					(this.getColor() == Color.White) ? Turn.Player1 : Turn.Player2, 
-							new ErrorMessage())){
+							message)){
 				Piece captured = Operations.movePiece(move, ops);
 				for(KingObserver k : kings){
-					System.out.println(this.type);
-					System.out.println(this.space);
-					ops.prettyPrintBoard();
+//					System.out.println(this.type);
+//					System.out.println(this.space);
+//					ops.prettyPrintBoard();
 					
 					
 					if(k.updateKing(this)){
-						System.out.println(this + " could make a move without checking the king");
+						//System.out.println(this + " could make a move without checking the king");
 						Operations.undoMove(move, captured, ops);
 						return true;
 					}
 					
 					
-					System.out.println(this.type);
-					System.out.println(this.space);
-					ops.prettyPrintBoard();
+//					System.out.println(this.type);
+//					System.out.println(this.space);
+//					ops.prettyPrintBoard();
 				}
 				Operations.undoMove(move, captured, ops);
-				move = MoveBuilder.buildMoveObject(move, mAndC.getMoveType(), ops);
+				move = MoveBuilder.buildMoveObject(move, mAndC.getMoveType(), ops, message);
 			}
 			
 			
-			System.out.println("Done trying moveType " + mAndC.getMoveType());
-			ops.prettyPrintBoard();
+//			System.out.println("Done trying moveType " + mAndC.getMoveType());
+//			ops.prettyPrintBoard();
 			
 			
 		}
 		
 		
-		System.out.println("Returning from tryEveryValidMove");
-		System.out.println(this.getType());
-		System.out.println(this.space);
-		ops.prettyPrintBoard();
+//		System.out.println("Returning from tryEveryValidMove");
+//		System.out.println(this.getType());
+//		System.out.println(this.space);
+//		ops.prettyPrintBoard();
 		
 		
 		return false;

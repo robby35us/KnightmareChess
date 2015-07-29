@@ -153,29 +153,29 @@ public class Operations {
 			message.setCheck();
 			return message;
 		}
-		return new ErrorMessage();
+		return message;
 	}
 
 	public static Piece movePiece(ActualMove move, Operations ops){
-		System.out.println("In movePiece");
-		ops.prettyPrintBoard();
+//		System.out.println("In movePiece");
+//		ops.prettyPrintBoard();
 		Piece moving = move.getInitialSpace().getPiece();
 		Piece captured = move.getDestinationSpace().getPiece();
 		move.getDestinationSpace().changePiece(moving);
 		move.getInitialSpace().changePiece(null);
 
-		System.out.println("After movePiece - captured = " + captured);
-		ops.prettyPrintBoard();
+//		System.out.println("After movePiece - captured = " + captured);
+//		ops.prettyPrintBoard();
 		return captured;
 	}
 	
 	public static void undoMove(ActualMove move, Piece captured, Operations ops){
-		System.out.println("In undoMove");
-		ops.prettyPrintBoard();
+//		System.out.println("In undoMove");
+//		ops.prettyPrintBoard();
 		move.getInitialSpace().changePiece(move.getDestinationSpace().getPiece());
 		move.getDestinationSpace().changePiece(captured);
-		System.out.println("After undoMove - captured = " + captured);
-		ops.prettyPrintBoard();
+//		System.out.println("After undoMove - captured = " + captured);
+//		ops.prettyPrintBoard();
 	}
 	
 	public void invalidMoveText(){
@@ -191,11 +191,11 @@ public class Operations {
 		Piece captured = dest.getPiece();
 		
 		if(moving == null || moving.getColor() != Color.values()[turn.ordinal()]){
-			invalidMoveText();
+			message.setWrongColorMoving();
 			return false;
 		}
 		if(captured != null && captured.getColor() == moving.getColor()){
-			invalidMoveText();
+			message.setWrongColorCaptured();
 			return false;
 		}
 		return true;
@@ -203,8 +203,16 @@ public class Operations {
 
 	public ErrorMessage checkForMate(Turn turn, ErrorMessage message) {
 		Player player = turn == Turn.Player1 ? whitePlayer : blackPlayer;
-		if(whitePlayer != null)
+		if(whitePlayer != null){
+			boolean prevDisplayText = displayText;
+			displayText = false;
 			player.checkForMate(message);
+			displayText = prevDisplayText;
+		}
 		return message;
+	}
+
+	public boolean displayText() {
+		return displayText;
 	}
 }

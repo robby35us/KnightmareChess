@@ -14,18 +14,17 @@ public class MoveCompositor {
 		prevMove = null;
 	}
 	
-	public static ActualMove compositeMoves(Move lastMove, ActualMove nextMove, Space initial, MoveConstraint[] constraints, Operations ops){
+	public static ActualMove compositeMoves(Move lastMove, ActualMove nextMove, Space initial, MoveConstraint[] constraints, Operations ops, 
+			                                ErrorMessage message){
 		if(constraints == null){
-			System.out.println("This piece can't move that way.");
-			ops.invalidMoveText();
+			message.setIllegalPattern();
 			return null;
 		}
 		for(MoveConstraint c : constraints)
 			if(!c.meetsConstraint(lastMove, nextMove, initial)){
-					System.out.println("This piece can't move there.");
-					ops.invalidMoveText();
-					return null;
-				}
+				message.setConstraintNotMet();
+				return null;
+			}
 		prevMove = nextMove;
 		return nextMove.setLastMove(lastMove);
 	}

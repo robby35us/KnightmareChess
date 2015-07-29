@@ -25,10 +25,13 @@ public class Start {
 			if(moveInput != null)
 				move = MoveBuilder.buildMoveObject(moveInput.getInit(), moveInput.getDest(), fw.getOps(), message);
 			else{
-				if(message.hasError())
+				if(message.hasError()){
 					move = null;
-				else
+				}
+				else{
+					fw.displayMessage(message);
 					break;
+				}
 			}
 			// MoveBuilder.buildMoveObject() returns null, this doesn't run and the program exits.
 			// This isn't always the desired behavior.
@@ -37,14 +40,14 @@ public class Start {
 					turn = Turn.Player2;
 				else
 					turn = Turn.Player1;
-				System.out.println("Board before check for mate");
-				fw.displayBoard();
+//				System.out.println("Board before check for mate");
+//				fw.displayBoard();
 				if(!message.hasError() && fw.getOps().checkForMate(turn, message).hasError()){
-					System.out.println("Breaking from while loop in Start.playGame()");
+//					System.out.println("Breaking from while loop in Start.playGame()");
 					break;
 				}
-				System.out.println("Board after check for mate");
-				fw.displayBoard();
+//				System.out.println("Board after check for mate");
+//				fw.displayBoard();
 			}
 			if(message.hasError())
 				fw.displayMessage(message);

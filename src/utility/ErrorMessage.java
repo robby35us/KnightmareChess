@@ -12,6 +12,7 @@ public class ErrorMessage {
 	private boolean nullInput = false;
 	private boolean invalidInput = false;
 	private boolean noPieceToMove = false;
+	private boolean constraintNotMet = false;
 	
 	@Override
 	public String toString(){
@@ -37,6 +38,8 @@ public class ErrorMessage {
 				output += "Null input reported\n";
 			if(noPieceToMove)
 				output += "No piece to move reported\n";
+			if(constraintNotMet)
+				output += "Constraint not met reported\n";
 		}
 		return output;
 		
@@ -124,5 +127,14 @@ public class ErrorMessage {
 	
 	public boolean getNoPieceToMove(){
 		return noPieceToMove;
+	}
+
+	public void setConstraintNotMet() {
+		constraintNotMet  = true;
+		noError = false;
+	}
+	
+	public boolean getConstraintNotMet(){
+		return constraintNotMet;
 	}
 }

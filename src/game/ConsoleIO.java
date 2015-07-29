@@ -44,6 +44,18 @@ public class ConsoleIO implements IOFramework {
 
 	@Override
 	public void displayMessage(ErrorMessage message) {
-		System.out.println(message);
+		if(message.getConstraintNotMet()){
+			System.out.println("This piece cannot move there at this time.");
+		}
+		else if(message.getIllegalPattern()){
+			System.out.println("This piece cannot move in that pattern.");
+		}
+		else if(message.getWrongColorMoving()){
+			System.out.println("This piece is the wrong color.");
+		}
+		else if(message.getWrongColorCaptured()){
+			System.out.println("This piece cannot capture a piece of the same color.");
+		}
+		ops.invalidMoveText();
 	}
 }
