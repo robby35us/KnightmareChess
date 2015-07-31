@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import moves.ActualMove;
@@ -16,15 +17,18 @@ public class TestIO implements IOFramework {
 	private Scanner input;
 	private boolean showDisplay;
 	private Board board;
+	private ArrayList<ErrorMessage> messages;
 	
 	public TestIO(Board board, boolean showDisplay){
-		ops = new Operations(showDisplay);
+		messages = new ArrayList<ErrorMessage>();
+		ops = new Operations(showDisplay, messages);
 		this.board = board;
 		this.showDisplay = showDisplay;
 	}
 	
 	public TestIO(boolean showDisplay) {
-		this.ops = new Operations(showDisplay);
+		messages = new ArrayList<ErrorMessage>();
+		this.ops = new Operations(showDisplay, messages);
 		board = null;
 		this.showDisplay = showDisplay;
 	}
@@ -70,6 +74,10 @@ public class TestIO implements IOFramework {
 	@Override
 	public boolean promotePawn(Piece moving){
 		return ops.promotePawn(moving, input);
+	}
+
+	public ArrayList<ErrorMessage> getMessages() {
+		return messages;
 	}
 
 }

@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import utility.ErrorMessage;
@@ -23,11 +24,13 @@ public class Operations {
 	private Player blackPlayer;
 	private PieceFactory factory;
 	private boolean displayText;
+	private ArrayList<ErrorMessage> messages;
 	
 	
-	public Operations(boolean displayText) {
+	public Operations(boolean displayText, ArrayList<ErrorMessage> messages) {
 		this.displayText = displayText;
 		Piece.setOps(this);
+		this.messages = messages;
 	}
 
 	public void setupGame() {
@@ -101,8 +104,9 @@ public class Operations {
 		input = in.next();
 		Space init = getSpace(input);
 		if(init == null){
-			if(!exitCondition(input))
+			if(!exitCondition(input)){
 				message.setInvalidInput();
+			}
 			return null;
 		}
 		input = in.next();
@@ -158,10 +162,15 @@ public class Operations {
 		}
 		if(moving.getType() == PieceType.Pawn && 
 		   (moving.getColor() == Color.White && moving.getSpace().getRank() == Rank.Eight) ||
-		   (moving.getColor() == Color.Black && moving.getSpace().getRank() == Rank.One))
+		   (moving.getColor() == Color.Black && moving.getSpace().getRank() == Rank.One)){
 			message.setPromotePawn();
+		}
 		MoveCompositor.setPreviousMove(move);
 		return message;
+	}
+
+	public ArrayList<ErrorMessage> getMessages() {
+		return messages;
 	}
 
 	public boolean promotePawn(Piece moving, Scanner in) {
@@ -257,6 +266,7 @@ public class Operations {
 		return true;
 	}
 
+	// NOTE: THIS METHOD DOESN"T USE THE MESSAGE PARAMETER
 	public ErrorMessage checkForMate(Turn turn, ErrorMessage message) {
 		Player player = turn == Turn.Player1 ? whitePlayer : blackPlayer;
 		if(whitePlayer != null){

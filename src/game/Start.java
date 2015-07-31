@@ -16,10 +16,12 @@ public class Start {
 		ActualMove move;
 		MoveInput moveInput;
 		Turn turn = Turn.Player1;
-		ErrorMessage message;
+		ErrorMessage message = new ErrorMessage();
 		do{
 
 			fw.displayBoard();
+			if(message.hasError())
+				fw.getOps().getMessages().add(message);
 			message = new ErrorMessage();
 			moveInput = fw.getMoveInput(Color.values()[turn.ordinal()], message);
 			if(moveInput != null)

@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import components.Piece;
@@ -17,7 +18,7 @@ public class ConsoleIO implements IOFramework {
 	private Scanner input = new Scanner(System.in);
 	
 	public ConsoleIO(){
-		ops = new Operations(true);
+		ops = new Operations(true, new ArrayList<ErrorMessage>());
 	}
 	
 	@Override

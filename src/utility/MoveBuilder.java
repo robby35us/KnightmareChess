@@ -176,8 +176,6 @@ public class MoveBuilder{
 
 	private static Move moveAlongRank(Move move, RankAndFile currentRankAndFile, Space initial, Space destination, Color pieceColor, Operations ops, ErrorMessage message) {
 		int fileOffset = destination.getFile().ordinal() - currentRankAndFile.getFile().ordinal();
-		if(pieceColor == Color.Black)
-			fileOffset = -fileOffset;
 		if(initial.getPiece().getType() == PieceType.King && Math.abs(fileOffset) == 2){
 			if(fileOffset == 2){
 				ActualMove result = MoveCompositor.compositeMoves(move, new MoveKingSideCastle(pieceColor), initial, initial.getPiece().getConstraints(MoveType.KingSideCastle), ops, message);
@@ -217,7 +215,9 @@ public class MoveBuilder{
 			else
 				return null;
 		}
-		else if(fileOffset > 0)
+		if(pieceColor == Color.Black)
+			fileOffset = -fileOffset;
+		if(fileOffset > 0)
 			return MoveCompositor.compositeMoves(move, new MoveRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.Right), ops, message);
 		else // fileOffset < 0
 			return MoveCompositor.compositeMoves(move, new MoveLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.Left), ops, message);

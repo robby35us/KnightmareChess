@@ -4,9 +4,7 @@ import game.Start;
 import game.TestIO;
 
 import java.io.IOException;
-
 import junit.framework.Assert;
-
 import utility.ErrorMessage;
 
 public class MateTest {
