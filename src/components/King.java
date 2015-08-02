@@ -10,7 +10,7 @@ import definitions.*;
  * who in turn communicates with each piece on the opposing side
  * (through notifyOpposingPieceObservers()) that they should return 
  * whether or not they can check this king. Of course, each opposingPiece
- * must be registered and unregistered as neccessary throughout the course
+ * must be registered and unregistered as necessary throughout the course
  * of the game. 
  */
 public class King extends Piece implements KingSubject, KingObserver {
@@ -25,7 +25,7 @@ public class King extends Piece implements KingSubject, KingObserver {
 
 	@Override
 	/*
-	 * The only method in the KingObserver interace, this method is 
+	 * The only method in the KingObserver interface, this method is 
 	 * called by each piece on this king's side whenever they are
 	 * about to make a move. updateKing returns true if the move
 	 * is "safe" and the king is not in check. Otherwise, the move
@@ -40,7 +40,7 @@ public class King extends Piece implements KingSubject, KingObserver {
 	 * Each piece on the other side needs to register with 
 	 * with this king in order to guarantee that a player
 	 * will not move into check. This method should be 
-	 * called on this king everytime a piece on the other 
+	 * called on this king every time a piece on the other 
 	 * side gets added to the other player.
 	 */
 	public void registerOpposingPieceObserver(PieceObserver o) {

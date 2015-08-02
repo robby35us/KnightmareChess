@@ -1,5 +1,11 @@
 package definitions;
 
+/*
+ * This enum holds the information about the Rank(or row) and File (or Column) 
+ * offsets for each move type from the white player's perspective. For each 
+ * move type with the name MoveXxx, there is a corresponding MoveType with the 
+ * name Xxx.
+ */
 public enum MoveType {
 	Forward(1,0), ForwardLeft(1,-1), ForwardRight(1,1), ForwardTwo(2,0), 
 	LForwardLeft(2,-1), LForwardRight(2,1), LRightForward(1,2), LRightBackward(-1,2), 
@@ -11,15 +17,24 @@ public enum MoveType {
 	private int rankOffset;
 	private int fileOffset;
 	
+	/*
+	 * The rank and offset should be set from the white player's perspective.
+	 */
 	private MoveType(int rankOffset, int fileOffset){
 		this.rankOffset = rankOffset;
 		this.fileOffset = fileOffset;
 	}
 	
+	/*
+	 * Returns the Rank(or Row) offset from the white player's perspective.
+	 */
 	public int getRankOffset(){
 		return rankOffset;
 	}
 	
+	/*
+	 * Returns the File(or Column) offset from the white player's perspective.
+	 */
 	public int getFileOffset(){
 		return fileOffset;
 	}

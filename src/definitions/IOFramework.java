@@ -39,5 +39,9 @@ public interface IOFramework {
 	 */
 	public PieceType promotePawnTo();
 
+	/*
+	 * Displays the prompt to get the next move input via
+	 * the appropriate display method.
+	 */
 	public void displayGetMoveInputText(Turn turn);
 }
