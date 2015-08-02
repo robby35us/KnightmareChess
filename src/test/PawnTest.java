@@ -2,8 +2,6 @@ package test;
 
 import org.junit.Test;
 
-import utility.PieceInfo;
-
 import java.io.IOException;
 
 import components.Board;
@@ -13,6 +11,7 @@ import definitions.File;
 import definitions.PieceType;
 import definitions.Rank;
 import game.*;
+import io.TestIO;
 
 
 

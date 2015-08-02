@@ -1,7 +1,8 @@
-package game;
+package io;
 import java.util.Scanner;
 import utility.*;
 import definitions.*;
+import game.Operations;
 
 public class ConsoleIO implements IOFramework {
 	private Operations ops;

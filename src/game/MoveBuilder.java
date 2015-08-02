@@ -1,6 +1,6 @@
-package utility;
-import game.Operations;
+package game;
 import moves.*;
+import utility.ErrorMessage;
 import components.*;
 import definitions.*;
 import factory.MoveFactory;

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import utility.ErrorMessage;
-import utility.MoveCompositor;
 import utility.MoveInput;
 import components.Board;
 import components.Piece;

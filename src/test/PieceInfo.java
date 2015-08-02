@@ -1,4 +1,4 @@
-package utility;
+package test;
 
 import definitions.Color;
 import definitions.File;

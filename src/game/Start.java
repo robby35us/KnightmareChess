@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import moves.ActualMove;
 import utility.ErrorMessage;
-import utility.MoveBuilder;
 import utility.MoveInput;
 import definitions.Color;
 import definitions.IOFramework;
 import definitions.PieceType;
 import definitions.Turn;
+import io.ConsoleIO;
 
 public class Start {
 	public static void main(String[] args) throws IOException{

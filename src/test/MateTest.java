@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import game.Operations;
 import game.Start;
-import game.TestIO;
+import io.TestIO;
 
 import java.io.IOException;
 import utility.ErrorMessage;

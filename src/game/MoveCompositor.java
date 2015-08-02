@@ -1,7 +1,8 @@
-package utility;
+package game;
 import constraints.MoveConstraint;
 import moves.ActualMove;
 import moves.Move;
+import utility.ErrorMessage;
 
 
 public class MoveCompositor {

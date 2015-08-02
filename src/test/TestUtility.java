@@ -3,8 +3,6 @@ import moves.Move;
 
 import org.junit.Assert;
 
-import utility.PieceInfo;
-
 import components.Board;
 import components.Piece;
 import components.Space;

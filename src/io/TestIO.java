@@ -1,4 +1,4 @@
-package game;
+package io;
 import java.util.Scanner;
 import utility.ErrorMessage;
 import utility.MoveInput;
@@ -6,6 +6,7 @@ import definitions.Color;
 import definitions.IOFramework;
 import definitions.PieceType;
 import definitions.Turn;
+import game.Operations;
 
 public class TestIO implements IOFramework {
 	private Operations ops;

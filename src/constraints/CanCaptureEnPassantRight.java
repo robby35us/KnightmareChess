@@ -1,8 +1,8 @@
 package constraints;
-import utility.MoveCompositor;
 import moves.*;
 import components.*;
 import definitions.*;
+import game.MoveCompositor;
 
 /*
  * Verifies that a piece(pawn) can move EnPassant to the right

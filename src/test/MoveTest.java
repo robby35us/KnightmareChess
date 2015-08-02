@@ -1,7 +1,7 @@
 package test;
 import game.Operations;
 import game.Start;
-import game.TestIO;
+import io.TestIO;
 
 import java.io.IOException;
 import java.util.ArrayList;

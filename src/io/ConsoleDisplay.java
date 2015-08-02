@@ -1,4 +1,4 @@
-package game;
+package io;
 
 import components.*;
 import definitions.*;
