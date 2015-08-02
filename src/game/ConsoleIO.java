@@ -1,49 +1,24 @@
 package game;
-
-import java.util.ArrayList;
 import java.util.Scanner;
-
-import components.Piece;
-
-import moves.ActualMove;
-
-import utility.ErrorMessage;
-import utility.MoveInput;
-import definitions.Color;
-import definitions.IOFramework;
-import definitions.Turn;
+import utility.*;
+import definitions.*;
 
 public class ConsoleIO implements IOFramework {
 	private Operations ops;
 	private Scanner input = new Scanner(System.in);
 	
 	public ConsoleIO(){
-		ops = new Operations(true, new ArrayList<ErrorMessage>());
-	}
-	
-	@Override
-	public Operations getOps() {
-		return ops;
+		ops = new Operations();
 	}
 
 	@Override
 	public void displayBoard() {
-		ops.prettyPrintBoard();
+		ConsoleDisplay.displayBoard(ops.getBoard());
 	}
 
 	@Override
 	public MoveInput getMoveInput(Color color, ErrorMessage message) {
 		return ops.getMoveInput(color, input, message);
-	}
-
-	@Override
-	public void setupGame() {
-		ops.setupGame();
-	}
-
-	@Override
-	public boolean meetsUniversalConstraints(ActualMove move, Turn turn, ErrorMessage message) {
-		return ops.meetsUniversalConstraints(move, turn, message);
 	}
 
 	@Override
@@ -61,24 +36,35 @@ public class ConsoleIO implements IOFramework {
 			System.out.println("This piece cannot capture a piece of the same color.");
 		}
 		if(message.hasError())
-			ops.invalidMoveText();
+			ConsoleDisplay.invalidMoveText();
 	}
 
 	@Override
-	public boolean promotePawn(Piece moving) {
+	public PieceType promotePawnTo() {
 		try{
 			while(true){
 				System.out.println("Choose type to promote pawn to - Q, R, B, or K:");
-				if(ops.promotePawn(moving, input)){
-					
-					return true;
-				}
+				PieceType promotionType = ops.getPawnPromotionType(input);	
+				if(promotionType != null)
+					return promotionType;
+				
 				else
 					System.out.println("Please try again.");
 			}
 		}	
 		catch(Exception e){
-			return false;
+			return null;
 		}
+	}
+
+	@Override
+	public void runGameIntro() {
+		// TODO /* leaving blank for now */
+		
+	}
+
+	@Override
+	public void displayGetMoveInputText(Turn turn) {
+		ConsoleDisplay.displayGetMoveInputText(turn);
 	}
 }

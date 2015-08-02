@@ -1,51 +1,27 @@
 package game;
-
-import java.util.ArrayList;
 import java.util.Scanner;
-
-import moves.ActualMove;
-import components.Board;
-import components.Piece;
 import utility.ErrorMessage;
 import utility.MoveInput;
 import definitions.Color;
 import definitions.IOFramework;
+import definitions.PieceType;
 import definitions.Turn;
 
 public class TestIO implements IOFramework {
 	private Operations ops;
 	private Scanner input;
 	private boolean showDisplay;
-	private Board board;
-	private ArrayList<ErrorMessage> messages;
 	
-	public TestIO(Board board, boolean showDisplay){
-		messages = new ArrayList<ErrorMessage>();
-		ops = new Operations(showDisplay, messages);
-		this.board = board;
+	public TestIO(Operations ops, String str,  boolean showDisplay){
+		this.ops = ops;
+		input = new Scanner(str);
 		this.showDisplay = showDisplay;
-	}
-	
-	public TestIO(boolean showDisplay) {
-		messages = new ArrayList<ErrorMessage>();
-		this.ops = new Operations(showDisplay, messages);
-		board = null;
-		this.showDisplay = showDisplay;
-	}
-
-	@Override
-	public Operations getOps() {
-		return ops;
 	}
 
 	@Override
 	public void displayBoard() {
 		if(showDisplay)
-			ops.prettyPrintBoard();
-	}
-
-	public void setMoveInput(String str){
-		this.input = new Scanner(str);
+			ConsoleDisplay.displayBoard(ops.getBoard());
 	}
 	
 	@Override
@@ -54,30 +30,24 @@ public class TestIO implements IOFramework {
 	}
 
 	@Override
-	public void setupGame() {
-		if(board != null)
-			ops.setupTestGame(board);
-		else
-			ops.setupGame();
-	}
-
-	@Override
-	public boolean meetsUniversalConstraints(ActualMove move, Turn turn, ErrorMessage message) {
-		return ops.meetsUniversalConstraints(move, turn, message);
-	}
-
-	@Override
 	public void displayMessage(ErrorMessage message) {
 		return;
 	}
 
 	@Override
-	public boolean promotePawn(Piece moving){
-		return ops.promotePawn(moving, input);
+	public PieceType promotePawnTo(){
+		return ops.getPawnPromotionType(input);
 	}
 
-	public ArrayList<ErrorMessage> getMessages() {
-		return messages;
+	@Override
+	public void runGameIntro() {
+		// TODO Auto-generated method stub
+		
 	}
 
+	@Override
+	public void displayGetMoveInputText(Turn turn) {
+		if(showDisplay)
+			ConsoleDisplay.displayGetMoveInputText(turn);
+	}
 }

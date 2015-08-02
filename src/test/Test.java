@@ -1,16 +1,15 @@
 package test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import java.io.IOException;
-
-import utility.ErrorMessage;
-
-import game.ConsoleIO;
-import game.Start;
-
+@RunWith(Suite.class)
+@SuiteClasses({MateTest.class, MoveTest.class, PawnTest.class, MoveDecoratorTest.class})
 public class Test{
 
-	public static void main(String[] args) throws IOException{
-		ErrorMessage message = Start.playGame(new ConsoleIO());
-		System.out.println(message);
+	public static final boolean SHOW_DISPLAY = false;
+
+	public void runTestSuite(){
+		
 	}
 }

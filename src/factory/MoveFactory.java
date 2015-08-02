@@ -7,6 +7,8 @@ public class MoveFactory {
 	public ActualMove makeMove(MoveType type, Color color){
 		ActualMove move = null;
 		switch(type){
+			case EnPassantLeft : move = new MoveEnPassantLeft(color); break;
+			case EnPassantRight : move = new MoveEnPassantRight(color); break;
 			case Forward : move = new MoveForward(color); break;
 			case ForwardLeft : move = new MoveForwardLeft(color); break;
 			case ForwardRight : move = new MoveForwardRight(color); break;

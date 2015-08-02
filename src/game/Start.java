@@ -8,11 +8,16 @@ import utility.MoveBuilder;
 import utility.MoveInput;
 import definitions.Color;
 import definitions.IOFramework;
+import definitions.PieceType;
 import definitions.Turn;
 
 public class Start {
-	public static ErrorMessage playGame(IOFramework fw) throws IOException{
-		fw.setupGame();
+	public static void main(String[] args) throws IOException{
+		ErrorMessage message = Start.playGame(new ConsoleIO(), new Operations());
+		System.out.println(message);
+	}
+	
+	public static ErrorMessage playGame(IOFramework fw, Operations ops) throws IOException{
 		ActualMove move;
 		MoveInput moveInput;
 		Turn turn = Turn.Player1;
@@ -21,11 +26,12 @@ public class Start {
 
 			fw.displayBoard();
 			if(message.hasError())
-				fw.getOps().getMessages().add(message);
+				ops.getMessages().add(message);
 			message = new ErrorMessage();
+			fw.displayGetMoveInputText(turn);
 			moveInput = fw.getMoveInput(Color.values()[turn.ordinal()], message);
 			if(moveInput != null)
-				move = MoveBuilder.buildMoveObject(moveInput.getInit(), moveInput.getDest(), fw.getOps(), message);
+				move = MoveBuilder.buildMoveObject(moveInput.getInit(), moveInput.getDest(), ops, message);
 			else{
 				if(message.hasError()){
 					move = null;
@@ -37,12 +43,13 @@ public class Start {
 			}
 			// MoveBuilder.buildMoveObject() returns null, this doesn't run and the program exits.
 			// This isn't always the desired behavior.
-			if(move != null && fw.meetsUniversalConstraints(move, turn, message)){
-				Operations.makeMove(move, turn, fw.getOps(), message);
+			if(move != null && ops.meetsUniversalConstraints(move, turn, message)){
+				Operations.makeMove(move, turn, ops, message);
 				if(message.getPromotePawn()){
 //					System.out.println("Before pawn promotion");
 //					fw.displayBoard();
-					if(fw.promotePawn(move.getDestinationSpace().getPiece())){
+					PieceType pawnPromotionType = fw.promotePawnTo();
+					if(ops.promotePawn(move.getDestinationSpace().getPiece(), pawnPromotionType)){
 						message = new ErrorMessage(); // clear error message
 					}
 					else
@@ -57,7 +64,7 @@ public class Start {
 						turn = Turn.Player1;
 //					System.out.println("Board before check for mate");
 //					fw.displayBoard();
-					if(/*doesNotHaveError &&*/ fw.getOps().checkForMate(turn, message).hasError()){
+					if(/*doesNotHaveError &&*/ ops.checkForMate(turn, message).hasError()){
 	//					System.out.println("Breaking from while loop in Start.playGame()");
 						break;
 					}

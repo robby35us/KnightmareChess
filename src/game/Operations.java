@@ -23,14 +23,20 @@ public class Operations {
 	private Player whitePlayer;
 	private Player blackPlayer;
 	private PieceFactory factory;
-	private boolean displayText;
 	private ArrayList<ErrorMessage> messages;
 	
 	
-	public Operations(boolean displayText, ArrayList<ErrorMessage> messages) {
-		this.displayText = displayText;
+	// use this constructor for a regular game
+	public Operations() {
+		this(null);
+		setupGame(); // sets the Board 
+	}
+
+	// use this constructor for a test game using irregular initial board state
+	public Operations(Board board) {
 		Piece.setOps(this);
-		this.messages = messages;
+		this.board = board;
+		this.messages = new ArrayList<ErrorMessage>();
 	}
 
 	public void setupGame() {
@@ -43,64 +49,9 @@ public class Operations {
 		blackPlayer = new Player(sets[1], Color.Black, sets[0].getKing());
 		Setup.setupChessBoard(sets[0], sets[1], board);
 	}
-	
-	public void setupTestGame(Board board){
-		this.board = board;
-	}
-
-	public void prettyPrintBoard() {
-		Space head = board.getSpace(Rank.Eight, File.A);
-		Space current = head;
-		System.out.println(" Rank    ----   ----   ----   ----   ----   ----   ----   ----");
-		for(int i = 8; i >= 1; i--){
-			if(current.getColor() == Color.White)
-				System.out.printf("  %d    |  ", i);
-			else {
-				System.out.printf("  %d    | |", i);
-			}
-			for(int j = 1; j <= 8; j++){
-				printPieceCode(current);
-				if(current.getColor() == Color.White)
-					if(current.getFile() == File.H)
-						System.out.print("  |  ");
-					else
-						System.out.print("  | |");
-				else
-						System.out.print("| |  ");
-				current = current.getSpaceRight();
-			}
-			System.out.println();
-			System.out.println("         ----   ----   ----   ----   ----   ----   ----   ----");
-			
-			head = head.getSpaceBackward();
-			current = head;
-		}
-		System.out.println("  File   a      b      c      d      e      f      g      h");
-	}
-	
-	private void printPieceCode(Space current) {
-		Piece piece = current.getPiece();
-		if(piece == null)
-			System.out.print("  ");
-		else{
-			String result = "";
-			result += piece.getColor() == Color.White ? "W" : "B";
-			switch(piece.getType()){
-				case Pawn : result += "P"; break;
-				case Knight : result += "N"; break;
-				case Bishop : result += "B"; break;
-				case Rook : result += "R"; break;
-				case Queen : result += "Q"; break;
-				case King : result += "K"; break;
-			}
-			System.out.print(result);
-		}
-	}
 
 	public MoveInput getMoveInput(Color color, Scanner in, ErrorMessage message) {
 		String input = null;
-		if(displayText)
-			System.out.println("Player " + (color.ordinal() + 1) + ", enter next move (ex. e2 e4):");
 		input = in.next();
 		Space init = getSpace(input);
 		if(init == null){
@@ -118,10 +69,7 @@ public class Operations {
 		return new MoveInput(init, dest);
 	}
 
-	public void invalidEntryText(String input) {
-		if(displayText)
-			System.out.println(input + " is not a valid space identifier.");
-	}
+
 
 	private Space getSpace(String input) {
 		if(input == null || input.length() != 2)
@@ -172,8 +120,8 @@ public class Operations {
 	public ArrayList<ErrorMessage> getMessages() {
 		return messages;
 	}
-
-	public boolean promotePawn(Piece moving, Scanner in) {
+	
+	public PieceType getPawnPromotionType(Scanner in){
 		String input = in.next();
 		char selection = input.charAt(0);
 		PieceType replacementType;
@@ -195,11 +143,15 @@ public class Operations {
 				replacementType = PieceType.Bishop;
 				break;
 			default :
-				return false;
+				return null;
 		}
+		return replacementType;
+	}
+
+	public boolean promotePawn(Piece moving, PieceType promotionType) {
 		Color color = moving.getColor();
 		Player player = color == Color.White ? whitePlayer : blackPlayer;
-		Piece newPiece = (factory.makePiece(replacementType, color));
+		Piece newPiece = (factory.makePiece(promotionType, color));
 		moving.getSpace().changePiece(newPiece);
 		player.losePiece(moving);
 		player.addPiece(newPiece);
@@ -242,13 +194,7 @@ public class Operations {
 //		System.out.println("After undoMove - captured = " + captured);
 //		ops.prettyPrintBoard();
 	}
-	
-	public void invalidMoveText(){
-		if(displayText){
-			System.out.println("The entered move is not valid.");
-			System.out.println("Please try again.");
-		}
-	}
+
 	public boolean meetsUniversalConstraints(ActualMove move, Turn turn, ErrorMessage message) {
 		Space init = move.getInitialSpace();
 		Space dest = move.getDestinationSpace();
@@ -270,15 +216,12 @@ public class Operations {
 	public ErrorMessage checkForMate(Turn turn, ErrorMessage message) {
 		Player player = turn == Turn.Player1 ? whitePlayer : blackPlayer;
 		if(whitePlayer != null){
-			boolean prevDisplayText = displayText;
-			displayText = false;
 			player.checkForMate(message);
-			displayText = prevDisplayText;
 		}
 		return message;
 	}
 
-	public boolean displayText() {
-		return displayText;
+	public Board getBoard() {
+		return board;
 	}
 }
