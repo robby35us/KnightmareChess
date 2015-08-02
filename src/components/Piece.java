@@ -73,7 +73,7 @@ public class Piece implements PieceSubject, PieceObserver{
 	}
 	
 	/*
-	 * Used to add a new MoveType with cooresponding Constraint objects
+	 * Used to add a new MoveType with corresponding Constraint objects
 	 * to the Piece's moveTypesAndConstraints. WARNING: BEHAVIOR IS NOT
 	 * GUARANTEED FOR DUPLICATE MOVE TYPES!!
 	 */
