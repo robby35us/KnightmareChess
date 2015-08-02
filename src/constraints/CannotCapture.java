@@ -25,9 +25,9 @@ public class CannotCapture implements MoveConstraint {
 	 * conditions for this constraint. Space is the location of the piece that 
 	 * is moving, or rather, the initial space of the proposed move.
 	 */
-	public boolean meetsConstraint(Move lastMove, ActualMove nextMove, Space initialSpace) {
+	public boolean meetsConstraint(Move lastMove, ActualMove nextMove) {
 		Space nextSpace = board.getNextSpace(lastMove.getRankOffset() + nextMove.getRankOffset(), 
-                lastMove.getFileOffset() + nextMove.getFileOffset(), initialSpace);
+                lastMove.getFileOffset() + nextMove.getFileOffset(), lastMove.getInitialSpace());
 		Piece defender = nextSpace.getPiece();
 		return defender == null;
 	}

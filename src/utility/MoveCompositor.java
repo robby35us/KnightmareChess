@@ -1,8 +1,5 @@
 package utility;
-import game.Operations;
-import components.Space;
 import constraints.MoveConstraint;
-
 import moves.ActualMove;
 import moves.Move;
 
@@ -14,14 +11,14 @@ public class MoveCompositor {
 		prevMove = null;
 	}
 	
-	public static ActualMove compositeMoves(Move lastMove, ActualMove nextMove, Space initial, MoveConstraint[] constraints, Operations ops, 
-			                                ErrorMessage message){
+	public static ActualMove compositeMoves(Move lastMove, ActualMove nextMove, ErrorMessage message){
+		MoveConstraint[] constraints = lastMove.getInitialSpace().getPiece().getConstraints(nextMove.getMoveType());
 		if(constraints == null){
 			message.setIllegalPattern();
 			return null;
 		}
 		for(MoveConstraint c : constraints)
-			if(!c.meetsConstraint(lastMove, nextMove, initial)){
+			if(!c.meetsConstraint(lastMove, nextMove)){
 				message.setConstraintNotMet();
 				return null;
 			}

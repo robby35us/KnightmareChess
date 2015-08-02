@@ -179,19 +179,19 @@ public class Piece implements PieceSubject, PieceObserver{
 					(this.getColor() == Color.White) ? Turn.Player1 : Turn.Player2, 
 							message)){
 				
-				Piece captured = Operations.movePiece(move, ops);
+				Piece captured = Operations.movePiece(move);
 
 				// check for self-check
 				for(KingObserver k : kings){	
 					// if not self-check, this move is valid
 					if(k.updateKing()){
-						Operations.undoMove(move, captured, ops);
+						Operations.undoMove(move, captured);
 						
 						// we have found a valid move
 						return true;
 					}
 				}
-				Operations.undoMove(move, captured, ops);
+				Operations.undoMove(move, captured);
 				
 				// repeat the move on top of the last move
 				// NOTE: this code assume only same move combinations!!

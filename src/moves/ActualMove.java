@@ -1,6 +1,7 @@
 package moves;
 
 import definitions.Color;
+import definitions.MoveType;
 
 /* MoveActual.java
  * This class is a "abstract" class that extends
@@ -11,7 +12,7 @@ import definitions.Color;
  * a portion of a move, or one "space" in a given 
  * direction.
  * 
- * The ActualMove constructor is also a convertor for 
+ * The ActualMove constructor is also a converter for 
  * which way a player is looking at the board. Every
  * ActualMove decorator sends values to represent the offset
  * of the board as if it was the white player(Player1). Then, the 
@@ -20,12 +21,20 @@ import definitions.Color;
  */
 
 public abstract class ActualMove extends Move{
-	Move lastMove;
+	private Move lastMove;
+	private MoveType moveType;
 	
-	ActualMove(int rankOffset, int fileOffset, Color color){
-		super(color == Color.White ? rankOffset : -rankOffset, 
-		      color == Color.White ? fileOffset : -fileOffset,
+	ActualMove(MoveType moveType, Color color){
+		super(color == Color.White ? moveType.getRankOffset() : -moveType.getRankOffset(), 
+		      color == Color.White ? moveType.getFileOffset() : -moveType.getFileOffset(),
 		      null);
+		this.moveType = moveType;
+		if(color == Color.Black && 
+		   (moveType == MoveType.KingSideCastle || moveType == MoveType.ReverseKingSideCastle ||
+		    moveType == MoveType.QueenSideCastle || moveType == MoveType.ReverseQueenSideCastle)){
+			rankOffset = -rankOffset;
+			fileOffset = -fileOffset;
+		}
 	}
     
 	public ActualMove setLastMove(Move lastMove){
@@ -46,11 +55,15 @@ public abstract class ActualMove extends Move{
 	}
 	
 	public int getRankOffset(){
-			return rankOffset;
+		return rankOffset;
 	}
 	
 	public int getFileOffset(){
 		return fileOffset;
+	}
+
+	public MoveType getMoveType() {
+		return moveType;
 	}
 
 

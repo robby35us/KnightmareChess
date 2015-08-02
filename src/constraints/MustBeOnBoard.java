@@ -1,7 +1,6 @@
 package constraints;
-import components.Board;
-import components.Space;
 
+import components.Board;
 import moves.ActualMove;
 import moves.Move;
 
@@ -24,10 +23,10 @@ public class MustBeOnBoard implements MoveConstraint {
 	 * conditions for this constraint. Space is the location of the piece that 
 	 * is moving, or rather, the initial space of the proposed move.
 	 */
-	public boolean meetsConstraint(Move lastMove, ActualMove nextMove, Space initialSpace) {
+	public boolean meetsConstraint(Move lastMove, ActualMove nextMove) {
 		try{
 			board.getNextSpace(lastMove.getRankOffset() + nextMove.getRankOffset(), 
-												 lastMove.getFileOffset() + nextMove.getFileOffset(), initialSpace);
+												 lastMove.getFileOffset() + nextMove.getFileOffset(), lastMove.getInitialSpace());
 		}
 		catch(Exception e){
 			return false;

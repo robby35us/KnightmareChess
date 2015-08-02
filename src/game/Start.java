@@ -44,7 +44,7 @@ public class Start {
 			// MoveBuilder.buildMoveObject() returns null, this doesn't run and the program exits.
 			// This isn't always the desired behavior.
 			if(move != null && ops.meetsUniversalConstraints(move, turn, message)){
-				Operations.makeMove(move, turn, ops, message);
+				ops.makeMove(move, turn, message);
 				if(message.getPromotePawn()){
 //					System.out.println("Before pawn promotion");
 //					fw.displayBoard();

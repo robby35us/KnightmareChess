@@ -28,7 +28,8 @@ public class MustCapture implements MoveConstraint {
 	 * conditions for this constraint. Space is the location of the piece that 
 	 * is moving, or rather, the initial space of the proposed move.
 	 */
-	public boolean meetsConstraint(Move lastMove, ActualMove nextMove, Space initialSpace) {
+	public boolean meetsConstraint(Move lastMove, ActualMove nextMove) {
+		Space initialSpace = lastMove.getInitialSpace();
 		Space nextSpace = board.getNextSpace(lastMove.getRankOffset() + nextMove.getRankOffset(), 
 						                lastMove.getFileOffset() + nextMove.getFileOffset(), initialSpace);
 		Piece defender = nextSpace.getPiece();

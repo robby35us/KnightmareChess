@@ -8,10 +8,7 @@ import definitions.MoveType;
  */
 public class MoveQueenSideCastle extends ActualMove{
 	public MoveQueenSideCastle(Color color){
-		super(MoveType.QueenSideCastle.getRankOffset(), 
-		      color == Color.White ?
-		    		  MoveType.QueenSideCastle.getFileOffset() : 
-		    		  -MoveType.QueenSideCastle.getFileOffset(), 
+		super(MoveType.QueenSideCastle, 
 		      color);
 	}
 }

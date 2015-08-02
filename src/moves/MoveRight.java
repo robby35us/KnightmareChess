@@ -8,8 +8,7 @@ import definitions.MoveType;
  */
 public class MoveRight extends ActualMove{
 	public MoveRight(Color color){
-		super(MoveType.Right.getRankOffset(),
-			  MoveType.Right.getFileOffset(), 
+		super(MoveType.Right, 
 			  color);
 	}
 }

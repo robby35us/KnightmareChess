@@ -1,26 +1,19 @@
 package test;
 import moves.Move;
 import org.junit.Test;
-import org.junit.BeforeClass;
 import definitions.Color;
 import definitions.MoveType;
 import factory.MoveFactory;
 
 
 public class MoveDecoratorTest {
-	static MoveFactory factory;
-	
-	@BeforeClass
-	public static void setFactory(){
-		factory = new MoveFactory();
-	}
 	
 	@Test
 	public void TestMoveForward(){
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.Forward, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.Forward, colors[i]);
 			TestUtility.verifyMove(move, 1,0, colors[i]);
 		}
 	}
@@ -30,7 +23,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.ForwardLeft, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.ForwardLeft, colors[i]);
 			TestUtility.verifyMove(move, 1, -1, colors[i]);
 		}
 	}
@@ -41,7 +34,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.ForwardRight, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.ForwardRight, colors[i]);
 			TestUtility.verifyMove(move, 1, 1, colors[i]);
 		}
 	}
@@ -51,7 +44,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.ForwardTwo, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.ForwardTwo, colors[i]);
 			TestUtility.verifyMove(move, 2, 0, colors[i]);
 		}
 	}
@@ -61,7 +54,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.LForwardLeft, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.LForwardLeft, colors[i]);
 			TestUtility.verifyMove(move, 2, -1, colors[i]);
 		}
 	}
@@ -71,7 +64,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.LForwardRight, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.LForwardRight, colors[i]);
 			TestUtility.verifyMove(move, 2, 1, colors[i]);
 		}
 	}
@@ -81,7 +74,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.LRightForward, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.LRightForward, colors[i]);
 			TestUtility.verifyMove(move, 1, 2, colors[i]);
 		}
 	}
@@ -91,7 +84,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.LRightBackward, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.LRightBackward, colors[i]);
 			TestUtility.verifyMove(move, -1, 2, colors[i]);
 		}
 	}
@@ -101,7 +94,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.LBackwardRight, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.LBackwardRight, colors[i]);
 			TestUtility.verifyMove(move, -2, 1, colors[i]);
 		}
 	}
@@ -111,7 +104,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.LBackwardLeft, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.LBackwardLeft, colors[i]);
 			TestUtility.verifyMove(move, -2, -1, colors[i]);
 		}
 	}
@@ -121,7 +114,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.LLeftBackward, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.LLeftBackward, colors[i]);
 			TestUtility.verifyMove(move, -1,-2, colors[i]);
 		}
 	}
@@ -131,7 +124,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.LLeftForward, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.LLeftForward, colors[i]);
 			TestUtility.verifyMove(move, 1, -2, colors[i]);
 		}
 	}
@@ -141,7 +134,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.BackwardRight, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.BackwardRight, colors[i]);
 			TestUtility.verifyMove(move, -1, 1, colors[i]);
 		}
 	} 
@@ -151,7 +144,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.BackwardLeft, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.BackwardLeft, colors[i]);
 			TestUtility.verifyMove(move, -1, -1, colors[i]);
 		}
 	}
@@ -161,7 +154,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.Right, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.Right, colors[i]);
 			TestUtility.verifyMove(move, 0, 1, colors[i]);
 		}
 	}
@@ -171,7 +164,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.Backward, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.Backward, colors[i]);
 			TestUtility.verifyMove(move, -1,0, colors[i]);
 		}
 	}
@@ -181,7 +174,7 @@ public class MoveDecoratorTest {
 		Move move;
 		Color[] colors = Color.values();
 		for(int i = 0; i <colors.length; i++){
-			move = factory.makeMove(MoveType.Left, colors[i]);
+			move = MoveFactory.makeMoveObject(MoveType.Left, colors[i]);
 			TestUtility.verifyMove(move, 0, -1, colors[i]);
 		}
 	}
@@ -189,36 +182,36 @@ public class MoveDecoratorTest {
 	@Test
 	public void TestMoveReverseKingSideCastle(){
 		Move move;
-		move = factory.makeMove(MoveType.ReverseKingSideCastle, Color.White);
+		move = MoveFactory.makeMoveObject(MoveType.ReverseKingSideCastle, Color.White);
 		TestUtility.verifyMove(move, 0, -2, Color.White);
-		move = factory.makeMove(MoveType.ReverseKingSideCastle, Color.Black);
+		move = MoveFactory.makeMoveObject(MoveType.ReverseKingSideCastle, Color.Black);
 		TestUtility.verifyMove(move, 0, 2, Color.Black);
 	}
 	
 	@Test
 	public void TestMoveReverseQueenSideCastle(){
 		Move move;
-		move = factory.makeMove(MoveType.ReverseQueenSideCastle, Color.White);
+		move = MoveFactory.makeMoveObject(MoveType.ReverseQueenSideCastle, Color.White);
 		TestUtility.verifyMove(move, 0, 3, Color.White);
-		move = factory.makeMove(MoveType.ReverseQueenSideCastle, Color.Black);
+		move = MoveFactory.makeMoveObject(MoveType.ReverseQueenSideCastle, Color.Black);
 		TestUtility.verifyMove(move, 0, -3, Color.Black);
 	}
 	
 	@Test
 	public void TestMoveKingSideCastle(){
 		Move move;
-		move = factory.makeMove(MoveType.KingSideCastle, Color.White);
+		move = MoveFactory.makeMoveObject(MoveType.KingSideCastle, Color.White);
 		TestUtility.verifyMove(move, 0, 2, Color.White);
-		move = factory.makeMove(MoveType.KingSideCastle, Color.Black);
+		move = MoveFactory.makeMoveObject(MoveType.KingSideCastle, Color.Black);
 		TestUtility.verifyMove(move, 0, -2, Color.Black);
 	}
 	
 	@Test
 	public void TestMoveQueenSideCastle(){
 		Move move;
-		move = factory.makeMove(MoveType.QueenSideCastle, Color.White);
+		move = MoveFactory.makeMoveObject(MoveType.QueenSideCastle, Color.White);
 		TestUtility.verifyMove(move, 0, -2, Color.White);
-		move = factory.makeMove(MoveType.QueenSideCastle, Color.Black);
+		move = MoveFactory.makeMoveObject(MoveType.QueenSideCastle, Color.Black);
 		TestUtility.verifyMove(move, 0, 2, Color.Black);
 	}
 }

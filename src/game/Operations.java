@@ -88,19 +88,19 @@ public class Operations {
 		 return input.charAt(0) == 'q' || input.charAt(0) == 'Q';
 	}
 
-	public static ErrorMessage makeMove(ActualMove move, Turn turn, Operations ops, ErrorMessage message) {
+	public ErrorMessage makeMove(ActualMove move, Turn turn, ErrorMessage message) {
 		Piece moving = move.getInitialSpace().getPiece();
-		Piece captured = movePiece(move, ops);
-		Player opposite = turn == Turn.Player1 ? ops.blackPlayer : ops.whitePlayer;
+		Piece captured = movePiece(move);
+		Player opposite = turn == Turn.Player1 ? blackPlayer : whitePlayer;
 		if(captured != null){
 			if(opposite != null)
 			opposite.losePiece(captured);
 			captured.setSpace(null);
 		}
 		if(!moving.notifyKingObservers()){
-			Operations.undoMove(move, captured, ops);
+			undoMove(move, captured);
 			if(captured != null){
-				opposite = captured.getColor() == Color.White ? ops.whitePlayer : ops.blackPlayer;
+				opposite = captured.getColor() == Color.White ? whitePlayer : blackPlayer;
 				if(opposite != null)
 					opposite.addPiece(captured);
 				captured.setSpace(move.getDestinationSpace());
@@ -158,7 +158,7 @@ public class Operations {
 		return true;
 	}
 
-	public static Piece movePiece(ActualMove move, Operations ops){
+	public static Piece movePiece(ActualMove move){
 //		System.out.println("In movePiece");
 //		ops.prettyPrintBoard();
 		Piece moving = move.getInitialSpace().getPiece();
@@ -178,7 +178,7 @@ public class Operations {
 		return captured;
 	}
 	
-	public static void undoMove(ActualMove move, Piece captured, Operations ops){
+	public static void undoMove(ActualMove move, Piece captured){
 //		System.out.println("In undoMove");
 //		ops.prettyPrintBoard();
 		Piece moving = move.getDestinationSpace().getPiece();

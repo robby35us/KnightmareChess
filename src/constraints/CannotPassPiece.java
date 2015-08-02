@@ -3,8 +3,6 @@ package constraints;
 import moves.ActualMove;
 import moves.Move;
 
-import components.Space;
-
 /*
  * Verifies that this move will not "pass through" another 
  * piece on the board. For instance, if the pawn is moving
@@ -21,9 +19,9 @@ public class CannotPassPiece implements MoveConstraint {
 	 * conditions for this constraint. Space is the location of the piece that 
 	 * is moving, or rather, the initial space of the proposed move.
 	 */
-	public boolean meetsConstraint(Move lastMove, ActualMove nextMove, Space initial) {
+	public boolean meetsConstraint(Move lastMove, ActualMove nextMove) {
 		return lastMove.getDestinationSpace().getPiece() == null ||
-		       lastMove.getDestinationSpace().getPiece() == initial.getPiece();
+		       lastMove.getDestinationSpace().getPiece() == lastMove.getInitialSpace().getPiece();
 	}
 
 }

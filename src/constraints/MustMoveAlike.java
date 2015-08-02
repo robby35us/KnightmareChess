@@ -1,5 +1,4 @@
 package constraints;
-import components.Space;
 
 import moves.ActualMove;
 import moves.Move;
@@ -20,7 +19,7 @@ public class MustMoveAlike implements MoveConstraint {
 	 * conditions for this constraint. Space is the location of the piece that 
 	 * is moving, or rather, the initial space of the proposed move.
 	 */
-	public boolean meetsConstraint(Move lastMove, ActualMove nextMove, Space initial) {
+	public boolean meetsConstraint(Move lastMove, ActualMove nextMove) {
 		if(lastMove.getClass().getSuperclass().equals(Move.class))
 			return true;
 		else

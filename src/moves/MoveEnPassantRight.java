@@ -6,8 +6,7 @@ import definitions.MoveType;
 public class MoveEnPassantRight extends ActualMove {
 
 	public MoveEnPassantRight(Color color){
-		super(MoveType.ForwardRight.getRankOffset(),
-				  MoveType.ForwardRight.getFileOffset(), 
+		super(MoveType.EnPassantRight, 
 			      color);
 	}
 }

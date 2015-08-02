@@ -23,7 +23,9 @@ public class CanQueenCastle implements MoveConstraint {
 	 * conditions for this constraint. Space is the location of the piece that 
 	 * is moving, or rather, the initial space of the proposed move.
 	 */
-	public boolean meetsConstraint(Move lastMove, ActualMove nextMove, Space initial) {
+	public boolean meetsConstraint(Move lastMove, ActualMove nextMove) {
+		Space initial = lastMove.getInitialSpace();
+		
 		// verify that the initial piece is, in fact, a King object
 		Piece piece = initial.getPiece();
 		if(piece.getType() != PieceType.King)

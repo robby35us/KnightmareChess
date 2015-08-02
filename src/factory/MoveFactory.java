@@ -4,7 +4,7 @@ import moves.*;
 
 public class MoveFactory {
 
-	public ActualMove makeMove(MoveType type, Color color){
+	public static ActualMove makeMoveObject(MoveType type, Color color){
 		ActualMove move = null;
 		switch(type){
 			case EnPassantLeft : move = new MoveEnPassantLeft(color); break;

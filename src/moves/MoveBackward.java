@@ -8,8 +8,7 @@ import definitions.*;
 
 public class MoveBackward extends ActualMove{
 	public MoveBackward(Color color){
-		super(MoveType.Backward.getRankOffset(),
-			  MoveType.Backward.getFileOffset(), 
+		super(MoveType.Backward, 
 			  color);
 	}
 }

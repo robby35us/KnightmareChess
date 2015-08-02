@@ -27,11 +27,11 @@ public class NoPieceBehind implements MoveConstraint {
 	 * conditions for this constraint. Space is the location of the piece that 
 	 * is moving, or rather, the initial space of the proposed move.
 	 */
-	public boolean meetsConstraint(Move lastMove, ActualMove nextMove, Space initial) {
+	public boolean meetsConstraint(Move lastMove, ActualMove nextMove) {
 		Space destination = board.getNextSpace(lastMove.getRankOffset() + nextMove.getRankOffset(), 
 				                          lastMove.getFileOffset() + nextMove.getFileOffset(), 
-				                          initial);
-		Space behind = initial.getPiece().getColor() == Color.White ? destination.getSpaceBackward()
+				                          lastMove.getInitialSpace());
+		Space behind = lastMove.getInitialSpace().getPiece().getColor() == Color.White ? destination.getSpaceBackward()
 				                                                    : destination.getSpaceForward();
 		return !behind.hasPiece();
 	}

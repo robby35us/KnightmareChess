@@ -8,8 +8,7 @@ import definitions.MoveType;
  */
 public class MoveForward extends ActualMove{
 	public MoveForward(Color color){
-		super(MoveType.Forward.getRankOffset(),
-			  MoveType.Forward.getFileOffset(), 
+		super(MoveType.Forward, 
 			  color);
 	}
 }

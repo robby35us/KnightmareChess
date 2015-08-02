@@ -3,6 +3,7 @@ import game.Operations;
 import moves.*;
 import components.*;
 import definitions.*;
+import factory.MoveFactory;
 
 public class MoveBuilder{
 	private MoveBuilder(){}
@@ -61,139 +62,134 @@ public class MoveBuilder{
 		Space current = move.getDestinationSpace();
 		Rank rank = current.getRank();
 		File file = current.getFile();
-		Rank destinationRank = destination.getRank();
-		File destinationFile = destination.getFile();
-		RankAndFile currentRankAndFile = new RankAndFile(rank, file);
 		
-		while(move != null && (rank != destinationRank || file != destinationFile)){
-			move = selectMove(move, currentRankAndFile, destinationRank, destinationFile, ops, message);
+		while(move != null && (rank != destination.getRank() || file != destination.getFile())){
+			move = selectMove(move, destination, ops, message);
 			if(move == null)
 				return null;
-			currentRankAndFile = computeRankAndFile(move);
-			rank = currentRankAndFile.getRank();
-			file = currentRankAndFile.getFile();
+			rank = move.getDestinationSpace().getRank();
+			file = move.getDestinationSpace().getFile();
 		}
 		return (ActualMove) move;
 	}
 	
-	public static ActualMove selectMove(Move move, RankAndFile currentRankAndFile, Rank destinationRank, File destinationFile, Operations ops, ErrorMessage message){
-		Rank rank = currentRankAndFile.getRank();
-		File file = currentRankAndFile.getFile();
-		Space initial = move.getInitialSpace();
-		Space destination = getDestination(move.getDestinationSpace(), destinationRank.ordinal() - rank.ordinal(), destinationFile.ordinal() - file.ordinal());
-		Color pieceColor = initial.getPiece().getColor();
+	public static ActualMove selectMove(Move move, Space destination, Operations ops, ErrorMessage message){
+		Rank rank = move.getDestinationSpace().getRank();
+		File file = move.getDestinationSpace().getFile();
+		Rank destinationRank = destination.getRank();
+		File destinationFile = destination.getFile();
 		if(rank == destinationRank)
-			move = moveAlongRank(move, currentRankAndFile, move.getInitialSpace(), destination, pieceColor, ops, message);
+			move = moveAlongRank(move, destination, ops, message);
 		else if(file == destinationFile)
-			move = moveAlongFile(move, currentRankAndFile, move.getInitialSpace(), destination, pieceColor, ops, message);
+			move = moveAlongFile(move, destination, message);
 		else if(Math.abs(rank.ordinal() - destinationRank.ordinal()) == 
 			    Math.abs(file.ordinal() - destinationFile.ordinal()))
-			move = moveAlongDiagonal(move, currentRankAndFile, initial, destination, pieceColor, ops, message);
+			move = moveAlongDiagonal(move, destination, message);
 		else
-			move = moveAlongLShape(move, currentRankAndFile, initial, destination, pieceColor, ops, message);
+			move = moveAlongLShape(move, destination, message);
 		return (ActualMove) move;
 	}
-	
-	public static RankAndFile computeRankAndFile(Move move){
-			return new RankAndFile(Rank.values()[move.getInitialSpace().getRank().ordinal() + move.getRankOffset()],
-							   	   File.values()[move.getInitialSpace().getFile().ordinal() + move.getFileOffset()]);	
-	}
 		
-	private static Move moveAlongLShape(Move move, RankAndFile currentRankAndFile, Space initial, Space destination, Color pieceColor, Operations ops, ErrorMessage message) {
-		int rankOffset = destination.getRank().ordinal() - currentRankAndFile.getRank().ordinal();
-		int fileOffset = destination.getFile().ordinal() - currentRankAndFile.getFile().ordinal();
+	private static Move moveAlongLShape(Move move, Space destination, ErrorMessage message) {
+		int rankOffset = destination.getRank().ordinal() - move.getDestinationSpace().getRank().ordinal();
+		int fileOffset = destination.getFile().ordinal() - move.getDestinationSpace().getFile().ordinal();
+		Color pieceColor = move.getInitialSpace().getPiece().getColor();
 		if(pieceColor == Color.Black){
 			rankOffset = -rankOffset;
 			fileOffset = -fileOffset;
 		}
 		if(rankOffset == 2)
 			if(fileOffset == 1)
-				return MoveCompositor.compositeMoves(move, new MoveLForwardRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.LForwardRight), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.LForwardRight, pieceColor), message);
 			else if(fileOffset == -1)
-				return MoveCompositor.compositeMoves(move, new MoveLForwardLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.LForwardLeft), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.LForwardLeft, pieceColor), message);
 			else 
 				return null;
 		if(rankOffset == -2)
 			if(fileOffset == 1)
-				return MoveCompositor.compositeMoves(move, new MoveLBackwardRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.LBackwardRight), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.LBackwardRight, pieceColor), message);
 			else if(fileOffset == -1)
-				return MoveCompositor.compositeMoves(move, new MoveLBackwardLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.LBackwardLeft), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.LBackwardLeft, pieceColor), message);
 			else 
 				return null;
 		if(fileOffset == 2)
 			if(rankOffset == 1)
-				return MoveCompositor.compositeMoves(move, new MoveLRightForward(pieceColor), initial, initial.getPiece().getConstraints(MoveType.LRightForward), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.LRightForward, pieceColor), message);
 			else if(rankOffset == -1)
-				return MoveCompositor.compositeMoves(move, new MoveLRightBackward(pieceColor), initial, initial.getPiece().getConstraints(MoveType.LRightBackward), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.LRightBackward, pieceColor), message);
 			else 
 				return null;
 		if(fileOffset == -2)
 			if(rankOffset == 1)
-				return MoveCompositor.compositeMoves(move, new MoveLLeftForward(pieceColor), initial, initial.getPiece().getConstraints(MoveType.LLeftForward), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.LLeftForward, pieceColor), message);
 			else if(rankOffset == -1)
-				return MoveCompositor.compositeMoves(move, new MoveLLeftBackward(pieceColor), initial, initial.getPiece().getConstraints(MoveType.LLeftBackward), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.LLeftBackward, pieceColor), message);
 			else 
 				return null;
 		return null;
 	}
 
-	private static Move moveAlongDiagonal(Move move, RankAndFile currentRankAndFile, Space initial, Space destination, Color pieceColor, Operations ops, ErrorMessage message) {
-		int rankOffset = destination.getRank().ordinal() - currentRankAndFile.getRank().ordinal();
-		int fileOffset = destination.getFile().ordinal() - currentRankAndFile.getFile().ordinal();
+	private static Move moveAlongDiagonal(Move move, Space destination, ErrorMessage message) {
+		int rankOffset = destination.getRank().ordinal() - move.getDestinationSpace().getRank().ordinal();
+		int fileOffset = destination.getFile().ordinal() - move.getDestinationSpace().getFile().ordinal();
+		Color pieceColor = move.getInitialSpace().getPiece().getColor();
 		if(pieceColor == Color.Black){
 			rankOffset = -rankOffset;
 			fileOffset = -fileOffset;
 		}
 		if(rankOffset > 0)
 			if(fileOffset > 0)
-				if(initial.getPiece().getType() == PieceType.Pawn && destination.getPiece() == null)
-					return MoveCompositor.compositeMoves(move, new MoveEnPassantRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.EnPassantRight), ops, message);
+				if(move.getInitialSpace().getPiece().getType() == PieceType.Pawn && destination.getPiece() == null)
+					return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.EnPassantRight, pieceColor), message);
 				else
-					return MoveCompositor.compositeMoves(move, new MoveForwardRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ForwardRight), ops, message);
+					return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.ForwardRight, pieceColor), message);
 			else // fileOffset < 0
-				if(initial.getPiece().getType() == PieceType.Pawn && destination.getPiece() == null)
-					return MoveCompositor.compositeMoves(move, new MoveEnPassantLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.EnPassantLeft), ops, message);
+				if(move.getInitialSpace().getPiece().getType() == PieceType.Pawn && destination.getPiece() == null)
+					return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.EnPassantLeft, pieceColor), message);
 				else
-					return MoveCompositor.compositeMoves(move, new MoveForwardLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ForwardLeft), ops, message);
+					return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.ForwardLeft, pieceColor), message);
 		else // rankOffset < 0
 			if(fileOffset > 0)
-				return MoveCompositor.compositeMoves(move, new MoveBackwardRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.BackwardRight), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.BackwardRight, pieceColor), message);
 			else // fileOffset < 0
-				return MoveCompositor.compositeMoves(move, new MoveBackwardLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.BackwardLeft),ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.BackwardLeft, pieceColor), message);
 	}
 
-	private static Move moveAlongFile(Move move, RankAndFile currentRankAndFile, Space initial, Space destination, Color pieceColor, Operations ops, ErrorMessage message) {
-		int rankOffset = destination.getRank().ordinal() - currentRankAndFile.getRank().ordinal();
+	private static Move moveAlongFile(Move move, Space destination, ErrorMessage message) {
+		int rankOffset = destination.getRank().ordinal() - move.getDestinationSpace().getRank().ordinal();
+		Color pieceColor = move.getInitialSpace().getPiece().getColor();
 		if(pieceColor == Color.Black)
 			rankOffset = -rankOffset;
-		if(initial.getPiece().getType() == PieceType.Pawn && rankOffset == 2)
-			return MoveCompositor.compositeMoves(move, new MoveForwardTwo(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ForwardTwo), ops, message);
+		if(move.getInitialSpace().getPiece().getType() == PieceType.Pawn && rankOffset == 2)
+			return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.ForwardTwo, pieceColor), message);
 		if(rankOffset > 0)
-			return MoveCompositor.compositeMoves(move, new MoveForward(pieceColor), initial, initial.getPiece().getConstraints(MoveType.Forward), ops, message);
+			return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.Forward, pieceColor), message);
 		else // rankOffset < 0
-			return MoveCompositor.compositeMoves(move, new MoveBackward(pieceColor), initial, initial.getPiece().getConstraints(MoveType.Backward), ops, message);
+			return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.Backward, pieceColor), message);
 	}
 
-	private static Move moveAlongRank(Move move, RankAndFile currentRankAndFile, Space initial, Space destination, Color pieceColor, Operations ops, ErrorMessage message) {
-		int fileOffset = destination.getFile().ordinal() - currentRankAndFile.getFile().ordinal();
+	private static Move moveAlongRank(Move move, Space destination, Operations ops, ErrorMessage message) {
+		int fileOffset = destination.getFile().ordinal() - move.getDestinationSpace().getFile().ordinal();
+		Space initial = move.getInitialSpace();
+		Color pieceColor = initial.getPiece().getColor();
 		if(initial.getPiece().getType() == PieceType.King && Math.abs(fileOffset) == 2){
 			if(fileOffset == 2){
-				ActualMove result = MoveCompositor.compositeMoves(move, new MoveKingSideCastle(pieceColor), initial, initial.getPiece().getConstraints(MoveType.KingSideCastle), ops, message);
+				ActualMove result = MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.KingSideCastle, pieceColor), message);
 				if(result != null){
 					Space rookDest = initial.getSpaceRight();
 					Space rookInit = destination.getSpaceRight();
 					ActualMove rookMove = buildMoveObject(rookInit, rookDest, ops, new ErrorMessage());
-					Operations.makeMove(rookMove, pieceColor == Color.White ? Turn.Player1 : Turn.Player2, ops, message);
+					ops.makeMove(rookMove, pieceColor == Color.White ? Turn.Player1 : Turn.Player2, message);
 				}
 				return result; 
 			}
 			else if(fileOffset == -2){
-				ActualMove result =MoveCompositor.compositeMoves(move, new MoveQueenSideCastle(pieceColor), initial, initial.getPiece().getConstraints(MoveType.QueenSideCastle), ops, message);
+				ActualMove result =MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.QueenSideCastle, pieceColor), message);
 				if(result != null){
 					Space rookDest = initial.getSpaceLeft();
 					Space rookInit = rookDest.getSpaceLeft().getSpaceLeft().getSpaceLeft();
 					ActualMove rookMove = buildMoveObject(rookInit, rookDest, ops, new ErrorMessage());
-					Operations.makeMove(rookMove, pieceColor == Color.White ? Turn.Player1 : Turn.Player2, ops, message);
+					ops.makeMove(rookMove, pieceColor == Color.White ? Turn.Player1 : Turn.Player2, message);
 				}
 				return result; 
 			}
@@ -203,7 +199,7 @@ public class MoveBuilder{
 		else if(initial.getPiece().getType() == PieceType.Rook && 
 			    MoveCompositor.getPreviousMove().getClass() == MoveKingSideCastle.class){
 			if(fileOffset == -2)
-				return MoveCompositor.compositeMoves(move, new MoveReverseKingSideCastle(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ReverseKingSideCastle), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.ReverseKingSideCastle, pieceColor), message);
 			else{
 				return null;
 			}
@@ -211,16 +207,16 @@ public class MoveBuilder{
 		else if(initial.getPiece().getType() == PieceType.Rook &&
 				MoveCompositor.getPreviousMove().getClass() == MoveQueenSideCastle.class){
 			if(fileOffset == 3)
-				return MoveCompositor.compositeMoves(move, new MoveReverseQueenSideCastle(pieceColor), initial, initial.getPiece().getConstraints(MoveType.ReverseQueenSideCastle), ops, message);
+				return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.ReverseQueenSideCastle, pieceColor), message);
 			else
 				return null;
 		}
 		if(pieceColor == Color.Black)
 			fileOffset = -fileOffset;
 		if(fileOffset > 0)
-			return MoveCompositor.compositeMoves(move, new MoveRight(pieceColor), initial, initial.getPiece().getConstraints(MoveType.Right), ops, message);
+			return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.Right, pieceColor), message);
 		else // fileOffset < 0
-			return MoveCompositor.compositeMoves(move, new MoveLeft(pieceColor), initial, initial.getPiece().getConstraints(MoveType.Left), ops, message);
+			return MoveCompositor.compositeMoves(move, MoveFactory.makeMoveObject(MoveType.Left, pieceColor), message);
 	}
 
 	public static ActualMove buildMoveObject(ActualMove move, MoveType moveType, Operations ops, ErrorMessage message) {
