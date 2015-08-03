@@ -25,10 +25,14 @@ public abstract class ActualMove extends Move{
 	private MoveType moveType;
 	
 	ActualMove(MoveType moveType, Color color){
+		// flip offsets if color is black
 		super(color == Color.White ? moveType.getRankOffset() : -moveType.getRankOffset(), 
 		      color == Color.White ? moveType.getFileOffset() : -moveType.getFileOffset(),
 		      null);
+		
 		this.moveType = moveType;
+		
+		// flip offsets back to original offsets if color is black and offset MoveType is a Castle
 		if(color == Color.Black && 
 		   (moveType == MoveType.KingSideCastle || moveType == MoveType.ReverseKingSideCastle ||
 		    moveType == MoveType.QueenSideCastle || moveType == MoveType.ReverseQueenSideCastle)){
@@ -37,6 +41,10 @@ public abstract class ActualMove extends Move{
 		}
 	}
     
+	/*
+	 * Wraps the lastMove Move object with this ActualMove object.
+	 * Updates the offsets, initialSpace, and destination.
+	 */
 	public ActualMove setLastMove(Move lastMove){
 		this.lastMove = lastMove;
 		rankOffset += lastMove.getRankOffset();
@@ -46,10 +54,15 @@ public abstract class ActualMove extends Move{
 		return this;
 	}
 	
+	/*
+	 * returns true if this object has been wrapped around another move,
+	 * false otherwise.
+	 */
 	public boolean isLastMoveSet(){
 		return lastMove == null ? false : true;
 	}
 	
+	//public getters
 	public Move getLastMove(){
 		return lastMove;
 	}
@@ -65,6 +78,4 @@ public abstract class ActualMove extends Move{
 	public MoveType getMoveType() {
 		return moveType;
 	}
-
-
 }

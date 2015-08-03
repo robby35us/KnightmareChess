@@ -1,7 +1,7 @@
 package moves;
 import components.Space;
 
-/* Move.java - Robert Reed
+/* Move.java 
  * This class is the base class type for a chess move. 
  * Chess moves are composited together one space at a
  * time to facilitate every conceivable move possible.
@@ -15,19 +15,26 @@ public abstract class Move {
   protected Space initialSpace;
   protected Space destinationSpace;
   
+  /*
+   * The super constructor for all Move objects
+   */
   protected Move(int rankOffset, int fileOffset, Space initial){
-	  this.rankOffset = rankOffset;
-	  this.fileOffset = fileOffset;
-	  initialSpace = initial;
-	  setDestination();
+	this.rankOffset = rankOffset;
+	this.fileOffset = fileOffset;
+	initialSpace = initial;
+	setDestination();
   }
   
+  /*
+   * Uses the set rankOffset and fileOffset to iterate across the board
+   * to find the Destination Space and sets it to this.destinationSpace.
+   */
   protected void setDestination() {
 	int ro = rankOffset;
 	int fo = fileOffset;
 	Space space = initialSpace;
 	while(space != null && (ro != 0 || fo != 0 )){
-		if(ro > 0){
+		if(ro > 0){ 
 			space = space.getSpaceForward();
 			ro--;
 		}
@@ -45,9 +52,11 @@ public abstract class Move {
 		}
 	}
 	destinationSpace = space;
-}
+  }	
 
-public int getRankOffset(){
+
+  // public getters
+  public int getRankOffset(){
   	return rankOffset;
   }
   
@@ -56,11 +65,11 @@ public int getRankOffset(){
   }
   
   public Space getInitialSpace(){
-		return initialSpace;
+	return initialSpace;
   } 
   
 
-	public Space getDestinationSpace() {
-		return destinationSpace;
-	}
+  public Space getDestinationSpace() {
+	return destinationSpace;
+  }
 }
