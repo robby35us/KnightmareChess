@@ -6,11 +6,6 @@ import utility.ErrorMessage;
 
 
 public class MoveCompositor {
-	private static ActualMove prevMove;
-	
-	private MoveCompositor(){
-		prevMove = null;
-	}
 	
 	public static ActualMove compositeMoves(Move lastMove, ActualMove nextMove, ErrorMessage message){
 		MoveConstraint[] constraints = lastMove.getInitialSpace().getPiece().getConstraints(nextMove.getMoveType());
@@ -24,13 +19,5 @@ public class MoveCompositor {
 				return null;
 			}
 		return nextMove.setLastMove(lastMove);
-	}
-	
-	public static ActualMove getPreviousMove(){
-		return prevMove;
-	}
-	
-	public static void setPreviousMove(ActualMove prevMove){
-		MoveCompositor.prevMove = prevMove;
 	}
 }

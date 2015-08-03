@@ -6,15 +6,15 @@ import definitions.Color;
 import definitions.IOFramework;
 import definitions.PieceType;
 import definitions.Turn;
-import game.Operations;
+import game.GameState;
 
 public class TestIO implements IOFramework {
-	private Operations ops;
+	private GameState gs;
 	private Scanner input;
 	private boolean showDisplay;
 	
-	public TestIO(Operations ops, String str,  boolean showDisplay){
-		this.ops = ops;
+	public TestIO(GameState gs, String str,  boolean showDisplay){
+		this.gs = gs;
 		input = new Scanner(str);
 		this.showDisplay = showDisplay;
 	}
@@ -22,12 +22,12 @@ public class TestIO implements IOFramework {
 	@Override
 	public void displayBoard() {
 		if(showDisplay)
-			ConsoleDisplay.displayBoard(ops.getBoard());
+			ConsoleDisplay.displayBoard(gs.getBoard());
 	}
 	
 	@Override
 	public MoveInput getMoveInput(Color color, ErrorMessage message) {
-		return ops.getMoveInput(color, input, message);
+		return gs.getMoveInput(color, input, message);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class TestIO implements IOFramework {
 
 	@Override
 	public PieceType promotePawnTo(){
-		return ops.getPawnPromotionType(input);
+		return gs.getPawnPromotionType(input);
 	}
 
 	@Override

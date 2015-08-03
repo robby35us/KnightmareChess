@@ -2,7 +2,7 @@ package constraints;
 import moves.*;
 import components.*;
 import definitions.*;
-import game.MoveCompositor;
+import game.GameState;
 
 /*
  * Verifies that a piece(pawn) can move EnPassant to the right
@@ -11,6 +11,12 @@ import game.MoveCompositor;
  */
 public class CanCaptureEnPassantRight implements MoveConstraint {
 
+	GameState gs;
+	
+	public CanCaptureEnPassantRight(GameState gs){
+		this.gs = gs;
+	}
+	
 	@Override
 	/*
 	 * The meetsConstraint method looks at the lastMove object, which is often
@@ -37,7 +43,7 @@ public class CanCaptureEnPassantRight implements MoveConstraint {
 		if(nextMove.getClass() != MoveEnPassantRight.class){
 			return false;
 		}
-		Move prevMove = MoveCompositor.getPreviousMove();
+		Move prevMove = gs.getPreviousMove();
 		Space toRight = prevMove.getDestinationSpace();
 		
 		// verify that the adjacent space is the space last moved to

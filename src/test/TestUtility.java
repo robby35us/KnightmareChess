@@ -10,12 +10,13 @@ import definitions.Color;
 import definitions.File;
 import definitions.Rank;
 import factory.PieceFactory;
+import game.GameState;
 
 public class TestUtility {
 	
-	public static Board makeBoard(PieceInfo[] info){
-		Board board = new Board();
-		PieceFactory factory = new PieceFactory(board);
+	public static Board makeBoard(PieceInfo[] info, GameState gs){
+		Board board = gs.getBoard();
+		PieceFactory factory = new PieceFactory(board, gs);
 		for(int i = 0; i < info.length; i++){
 			Space space = board.getSpace(info[i].getRank(), info[i].getFile());
 			if(space.getPiece() == null) // verify space is empty

@@ -2,12 +2,13 @@ package factory;
 import components.*;
 import constraints.*;
 import definitions.*;
+import game.GameState;
 
 /*
  * Used to create a piece of a given PieceType. Unlike the MoveFactory, 
  * there must be an instance of the class to use this class. This
- * is because of the need of a copy of the Board object for this 
- * game for some of the constraints.
+ * is because of the need of a copy of the Board and Operations objects 
+ * for this game for some of the constraints.
  */
 public class PieceFactory {
 	
@@ -27,10 +28,10 @@ public class PieceFactory {
 	private CanCaptureEnPassantRight canCaptureEnPassnatRight;
 		
 	/*
-	 * Takes a copy of the Board state and uses it to 
+	 * Takes a copy of the Board state the GameState object and uses them to 
 	 * initialize the various constraints. 
 	 */
-	public PieceFactory(Board board){
+	public PieceFactory(Board board, GameState gs){
 		singleMove = new SingleMove();
 		mustCapture = new MustCapture(board);
 		mustMoveAlike = new MustMoveAlike();
@@ -42,8 +43,8 @@ public class PieceFactory {
 		canQueenCasltle = new CanQueenCastle();
 		cannotPassPiece = new CannotPassPiece();
 		noPieceBehind = new NoPieceBehind(board);
-		canCaptureEnPassantLeft = new CanCaptureEnPassantLeft();
-		canCaptureEnPassnatRight = new CanCaptureEnPassantRight();
+		canCaptureEnPassantLeft = new CanCaptureEnPassantLeft(gs);
+		canCaptureEnPassnatRight = new CanCaptureEnPassantRight(gs);
 	}
 	
 	/*

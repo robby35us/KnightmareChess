@@ -26,11 +26,12 @@ public class PawnTest {
 		beginningState[3] = new PieceInfo(PieceType.Pawn, Color.Black, Rank.Seven, File.A);
 		beginningState[4] = new PieceInfo(PieceType.Pawn, Color.Black, Rank.Seven, File.G);
 		beginningState[5] = new PieceInfo(PieceType.Pawn, Color.Black, Rank.Seven, File.H);
-		Board board = TestUtility.makeBoard(beginningState);
-		Operations ops = new Operations(board);
-		TestIO tio = new TestIO(ops, "h2 h4 g7 g5 h4 g5 h7 h6 g5 h6 a7 a5 b2 b4 a5 b4 a2 a3 b4 a3 q", test.Test.SHOW_DISPLAY);
+		GameState gs = new GameState(new Board());
+		Board board = TestUtility.makeBoard(beginningState, gs);
+
+		TestIO tio = new TestIO(gs, "h2 h4 g7 g5 h4 g5 h7 h6 g5 h6 a7 a5 b2 b4 a5 b4 a2 a3 b4 a3 q", test.Test.SHOW_DISPLAY);
 		try {
-			Start.playGame(tio, ops);
+			Start.playGame(tio, gs);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

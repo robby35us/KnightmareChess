@@ -2,7 +2,7 @@ package constraints;
 import moves.*;
 import components.*;
 import definitions.*;
-import game.MoveCompositor;
+import game.GameState;
 
 /*
  * Verifies that a piece(pawn) can move En Passant to the Left
@@ -10,6 +10,12 @@ import game.MoveCompositor;
  * it's left that just moved.
  */
 public class CanCaptureEnPassantLeft implements MoveConstraint {
+
+	GameState gs;
+	
+	public CanCaptureEnPassantLeft(GameState gs){
+		this.gs = gs;
+	}
 
 	@Override
 	/*
@@ -37,7 +43,7 @@ public class CanCaptureEnPassantLeft implements MoveConstraint {
 		if(nextMove.getClass() != MoveEnPassantLeft.class){
 			return false;
 		}
-		Move prevMove = MoveCompositor.getPreviousMove();
+		Move prevMove = gs.getPreviousMove();
 		Space toLeft = prevMove.getDestinationSpace();
 		
 		// verify that the adjacent space is the one that was just moved to

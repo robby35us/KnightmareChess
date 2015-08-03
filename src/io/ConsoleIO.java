@@ -2,24 +2,24 @@ package io;
 import java.util.Scanner;
 import utility.*;
 import definitions.*;
-import game.Operations;
+import game.GameState;
 
 public class ConsoleIO implements IOFramework {
-	private Operations ops;
+	private GameState gs;
 	private Scanner input = new Scanner(System.in);
 	
 	public ConsoleIO(){
-		ops = new Operations();
+		gs = new GameState();
 	}
 
 	@Override
 	public void displayBoard() {
-		ConsoleDisplay.displayBoard(ops.getBoard());
+		ConsoleDisplay.displayBoard(gs.getBoard());
 	}
 
 	@Override
 	public MoveInput getMoveInput(Color color, ErrorMessage message) {
-		return ops.getMoveInput(color, input, message);
+		return gs.getMoveInput(color, input, message);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class ConsoleIO implements IOFramework {
 		try{
 			while(true){
 				System.out.println("Choose type to promote pawn to - Q, R, B, or K:");
-				PieceType promotionType = ops.getPawnPromotionType(input);	
+				PieceType promotionType = gs.getPawnPromotionType(input);	
 				if(promotionType != null)
 					return promotionType;
 				

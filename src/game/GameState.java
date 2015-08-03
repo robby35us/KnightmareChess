@@ -17,30 +17,31 @@ import moves.ActualMove;
 import moves.MoveEnPassantLeft;
 import moves.MoveEnPassantRight;
 
-public class Operations {
+public class GameState {
 	private Board board;
 	private Player whitePlayer;
 	private Player blackPlayer;
 	private PieceFactory factory;
 	private ArrayList<ErrorMessage> messages;
+	private ActualMove prevMove;
 	
 	
 	// use this constructor for a regular game
-	public Operations() {
+	public GameState() {
 		this(null);
 		setupGame(); // sets the Board 
 	}
 
 	// use this constructor for a test game using irregular initial board state
-	public Operations(Board board) {
-		Piece.setOps(this);
+	public GameState(Board board) {
+		Piece.setGameState(this);
 		this.board = board;
 		this.messages = new ArrayList<ErrorMessage>();
 	}
 
 	public void setupGame() {
 		board = new Board();
-		factory = new PieceFactory(board);
+		factory = new PieceFactory(board, this);
 		PlayerSet [] sets = new PlayerSet[2];
 		sets[0] = new PlayerSet(factory, Color.White);
 		sets[1] = new PlayerSet(factory, Color.Black);
@@ -112,7 +113,7 @@ public class Operations {
 		   (moving.getColor() == Color.Black && moving.getSpace().getRank() == Rank.One)){
 			message.setPromotePawn();
 		}
-		MoveCompositor.setPreviousMove(move);
+		setPreviousMove(move);
 		return message;
 	}
 
@@ -222,5 +223,13 @@ public class Operations {
 
 	public Board getBoard() {
 		return board;
+	}
+	
+	public ActualMove getPreviousMove(){
+		return prevMove;
+	}
+	
+	public void setPreviousMove(ActualMove prevMove){
+		this.prevMove = prevMove;
 	}
 }

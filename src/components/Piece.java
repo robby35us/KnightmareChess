@@ -1,6 +1,6 @@
 package components;
+import game.GameState;
 import game.MoveBuilder;
-import game.Operations;
 import java.util.ArrayList;
 import moves.ActualMove;
 import utility.*;
@@ -16,7 +16,7 @@ import definitions.*;
  * making and invalid move). A Piece also keeps track of whether 
  * or not it has been moved away from it's original position.
  * Piece implements the PieceSubject and PieceObserver interfaces
- * to assit in keeping a piece from moving into check. When ever 
+ * to assist in keeping a piece from moving into check. When ever 
  * a Piece object is "moved," it notifies the king(s)
  * (notifyKingObservers()) which returns if that king has been
  * placed in check by this move. Each king of this piece's own 
@@ -37,14 +37,14 @@ public class Piece implements PieceSubject, PieceObserver{
 	// movements.
 	protected ArrayList<MoveTypeAndConstraints> moveTypesAndConstraints;
 	private ArrayList<KingObserver> kings;
-	private static Operations ops;
+	private static GameState gs;
 	
-	/* A convenience method to prevent unneccesary passing. 
+	/* A convenience method to prevent unnecessary passing. 
 	 * Should be called before any of the following:
 	 * updateOpposingPiece() and tryEveryValieMove().
 	 */
-	public static void setOps(Operations ops){
-		Piece.ops = ops;
+	public static void setGameState(GameState gs){
+		Piece.gs = gs;
 	}
 	
 	public Piece(PieceType type, Color color){
@@ -120,7 +120,7 @@ public class Piece implements PieceSubject, PieceObserver{
 	 * cannot capture the king, false otherwise.
 	 */
 	public boolean updateOpposingPiece(Space destination) {
-		return MoveBuilder.buildMoveObject(space, destination, ops, new ErrorMessage()) == null;
+		return MoveBuilder.buildMoveObject(space, destination, gs, new ErrorMessage()) == null;
 	}
 
 	@Override
@@ -174,30 +174,30 @@ public class Piece implements PieceSubject, PieceObserver{
 			ErrorMessage message = new ErrorMessage();
 			
 			// get the Move object
-			ActualMove move = MoveBuilder.buildMoveObject(space, mAndC.getMoveType(), ops, message);
+			ActualMove move = MoveBuilder.buildMoveObject(space, mAndC.getMoveType(), gs, message);
 			
-			while(move != null && ops.meetsUniversalConstraints(move, 
+			while(move != null && gs.meetsUniversalConstraints(move, 
 					(this.getColor() == Color.White) ? Turn.Player1 : Turn.Player2, 
 							message)){
 				
-				Piece captured = Operations.movePiece(move);
+				Piece captured = GameState.movePiece(move);
 
 				// check for self-check
 				for(KingObserver k : kings){	
 					// if not self-check, this move is valid
 					if(k.updateKing()){
-						Operations.undoMove(move, captured);
+						GameState.undoMove(move, captured);
 						
 						// we have found a valid move
 						return true;
 					}
 				}
-				Operations.undoMove(move, captured);
+				GameState.undoMove(move, captured);
 				
 				// repeat the move on top of the last move
 				// NOTE: this code assume only same move combinations!!
 				// also, this code seems to work by accident, it should be changed
-				move = MoveBuilder.buildMoveObject(move, mAndC.getMoveType(), ops, message);
+				move = MoveBuilder.buildMoveObject(move, mAndC.getMoveType(), gs, message);
 			}	
 		}
 		// there are no valid moves for this piece.
