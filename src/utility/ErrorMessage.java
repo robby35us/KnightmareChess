@@ -1,5 +1,8 @@
 package utility;
 
+/*
+ * 
+ */
 public class ErrorMessage {
 	
 	private boolean check = false;

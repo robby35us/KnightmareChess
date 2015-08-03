@@ -27,7 +27,7 @@ public class TestIO implements IOFramework {
 	
 	@Override
 	public MoveInput getMoveInput(Color color, ErrorMessage message) {
-		return gs.getMoveInput(color, input, message);
+		return InputParser.getMoveInput(color, input, gs.getBoard(), message);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class TestIO implements IOFramework {
 
 	@Override
 	public PieceType promotePawnTo(){
-		return gs.getPawnPromotionType(input);
+		return InputParser.getPawnPromotionType(input);
 	}
 
 	@Override

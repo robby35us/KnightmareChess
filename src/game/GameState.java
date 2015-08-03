@@ -1,22 +1,19 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import utility.ErrorMessage;
-import utility.MoveInput;
-import components.Board;
-import components.Piece;
-import components.Player;
-import components.PlayerSet;
-import components.Space;
-
+import components.*;
 import definitions.*;
 import factory.PieceFactory;
-import moves.ActualMove;
-import moves.MoveEnPassantLeft;
-import moves.MoveEnPassantRight;
+import moves.*;
 
+/*
+ * As advertised, this class keeps track of the game state. It holds
+ * the Board, two Player objects, a PieceFactory for making new pieces,
+ * a list of ErrorMessages and tracks the previous move. It also
+ * provides various operations and methods that involve changing the
+ * game state.
+ */
 public class GameState {
 	private Board board;
 	private Player whitePlayer;
@@ -26,128 +23,95 @@ public class GameState {
 	private ActualMove prevMove;
 	
 	
-	// use this constructor for a regular game
+	/*
+	 * This constructor sets up a regular game, and initializes the Board
+	 * with regular piece placement, as well as both Player objects.
+	 */
 	public GameState() {
 		this(null);
-		setupGame(); // sets the Board 
+		setupGameState(); // sets the Board 
 	}
-
-	// use this constructor for a test game using irregular initial board state
+	
+	/*
+	 * This constructor is used for testing with a irregular board. It 
+	 * does not place pieces on the given Board or create Player objects.
+	 */
 	public GameState(Board board) {
 		Piece.setGameState(this);
 		this.board = board;
 		this.messages = new ArrayList<ErrorMessage>();
 	}
 
-	public void setupGame() {
+	/*
+	 * Does the work of setting up the board state for a regular game.
+	 * Initializes the Players, their PlayerSet's, the Board, and the
+	 * factory.
+	 */
+	public void setupGameState() {
 		board = new Board();
 		factory = new PieceFactory(board, this);
+		
 		PlayerSet [] sets = new PlayerSet[2];
 		sets[0] = new PlayerSet(factory, Color.White);
 		sets[1] = new PlayerSet(factory, Color.Black);
+		
 		whitePlayer = new Player(sets[0], Color.White, sets[1].getKing());
 		blackPlayer = new Player(sets[1], Color.Black, sets[0].getKing());
+		
 		Setup.setupChessBoard(sets[0], sets[1], board);
 	}
 
-	public MoveInput getMoveInput(Color color, Scanner in, ErrorMessage message) {
-		String input = null;
-		input = in.next();
-		Space init = getSpace(input);
-		if(init == null){
-			if(!exitCondition(input)){
-				message.setInvalidInput();
-			}
-			return null;
-		}
-		input = in.next();
-		Space dest = getSpace(input);
-		if(dest == null){
-			message.setInvalidInput();
-			return null;
-		}
-		return new MoveInput(init, dest);
-	}
+	
 
-
-
-	private Space getSpace(String input) {
-		if(input == null || input.length() != 2)
-			return null;
-		char fileInput = input.toLowerCase().charAt(0);
-		char rankInput = input.charAt(1);
-		if(fileInput >= 'a' && fileInput <= 'h' &&
-		   rankInput >= '1' && rankInput <= '8')
-			return board.getSpace(Rank.values()[rankInput - '1'], 
-					              File.values()[fileInput - 'a']);
-		else
-			return null;
-	}
-
-	private boolean exitCondition(String input) {
-		 return input.charAt(0) == 'q' || input.charAt(0) == 'Q';
-	}
-
+	/*
+	 * Moves the piece to it's new positions, using the information provided
+	 * in move and turn to get the initial and destination location and for
+	 * which player should lose the captured piece.
+	 */
 	public ErrorMessage makeMove(ActualMove move, Turn turn, ErrorMessage message) {
 		Piece moving = move.getInitialSpace().getPiece();
+		
+		// Complete the move
 		Piece captured = movePiece(move);
 		Player opposite = turn == Turn.Player1 ? blackPlayer : whitePlayer;
+		
+		// remove the captured piece, if any, from the board
 		if(captured != null){
 			if(opposite != null)
 			opposite.losePiece(captured);
 			captured.setSpace(null);
 		}
+		
+		// verify that this move didn't place it's own king in check
 		if(!moving.notifyKingObservers()){
-			undoMove(move, captured);
+			
+			// reset everything to how it was before the move.
+			Space capturedSpace = undoMove(move, captured);
 			if(captured != null){
 				opposite = captured.getColor() == Color.White ? whitePlayer : blackPlayer;
 				if(opposite != null)
 					opposite.addPiece(captured);
-				captured.setSpace(move.getDestinationSpace());
+				
+				captured.setSpace(capturedSpace);
 			}
+			
+			// return that this move would have placed the king in check
 			message.setCheck();
 			return message;
 		}
+		
+		// check for pawn promotion
 		if(moving.getType() == PieceType.Pawn && 
 		   (moving.getColor() == Color.White && moving.getSpace().getRank() == Rank.Eight) ||
 		   (moving.getColor() == Color.Black && moving.getSpace().getRank() == Rank.One)){
 			message.setPromotePawn();
 		}
+		
+		System.out.println("PreveMove set to" + move);
 		setPreviousMove(move);
 		return message;
 	}
-
-	public ArrayList<ErrorMessage> getMessages() {
-		return messages;
-	}
 	
-	public PieceType getPawnPromotionType(Scanner in){
-		String input = in.next();
-		char selection = input.charAt(0);
-		PieceType replacementType;
-		switch(selection){
-			case 'Q':
-			case 'q':
-				replacementType = PieceType.Queen;
-				break;
-			case 'R':
-			case 'r':
-				replacementType = PieceType.Rook;
-				break;
-			case 'K' :
-			case 'k' :
-				replacementType = PieceType.Knight;
-				break;
-			case 'B' :
-			case 'b' :
-				replacementType = PieceType.Bishop;
-				break;
-			default :
-				return null;
-		}
-		return replacementType;
-	}
-
 	public boolean promotePawn(Piece moving, PieceType promotionType) {
 		Color color = moving.getColor();
 		Player player = color == Color.White ? whitePlayer : blackPlayer;
@@ -159,8 +123,6 @@ public class GameState {
 	}
 
 	public static Piece movePiece(ActualMove move){
-//		System.out.println("In movePiece");
-//		ops.prettyPrintBoard();
 		Piece moving = move.getInitialSpace().getPiece();
 		Space capturedSpace;
 		Space dest = move.getDestinationSpace();
@@ -173,14 +135,10 @@ public class GameState {
 		move.getDestinationSpace().changePiece(moving);
 		move.getInitialSpace().changePiece(null);
 
-//		System.out.println("After movePiece - captured = " + captured);
-//		ops.prettyPrintBoard();
 		return captured;
 	}
 	
-	public static void undoMove(ActualMove move, Piece captured){
-//		System.out.println("In undoMove");
-//		ops.prettyPrintBoard();
+	public static Space undoMove(ActualMove move, Piece captured){
 		Piece moving = move.getDestinationSpace().getPiece();
 		Space capturedSpace;
 		Space dest = move.getDestinationSpace();
@@ -191,8 +149,7 @@ public class GameState {
 		move.getInitialSpace().changePiece(moving);
 		dest.changePiece(null);
 		capturedSpace.changePiece(captured);
-//		System.out.println("After undoMove - captured = " + captured);
-//		ops.prettyPrintBoard();
+		return capturedSpace;
 	}
 
 	public boolean meetsUniversalConstraints(ActualMove move, Turn turn, ErrorMessage message) {
@@ -211,8 +168,7 @@ public class GameState {
 		}
 		return true;
 	}
-
-	// NOTE: THIS METHOD DOESN"T USE THE MESSAGE PARAMETER
+	
 	public ErrorMessage checkForMate(Turn turn, ErrorMessage message) {
 		Player player = turn == Turn.Player1 ? whitePlayer : blackPlayer;
 		if(whitePlayer != null){
@@ -221,15 +177,24 @@ public class GameState {
 		return message;
 	}
 
+	// public getters
 	public Board getBoard() {
 		return board;
 	}
 	
+
+	public ArrayList<ErrorMessage> getMessages() {
+		return messages;
+	}
+	
 	public ActualMove getPreviousMove(){
+		System.out.println("getPreviousMove returning " + prevMove);
 		return prevMove;
 	}
 	
+	// public setters
 	public void setPreviousMove(ActualMove prevMove){
 		this.prevMove = prevMove;
+		System.out.println("PreveMove set to " + this.prevMove);
 	}
 }

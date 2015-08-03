@@ -44,6 +44,7 @@ public class CanCaptureEnPassantLeft implements MoveConstraint {
 			return false;
 		}
 		Move prevMove = gs.getPreviousMove();
+		System.out.println(prevMove);
 		Space toLeft = prevMove.getDestinationSpace();
 		
 		// verify that the adjacent space is the one that was just moved to

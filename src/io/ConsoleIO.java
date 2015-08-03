@@ -8,8 +8,8 @@ public class ConsoleIO implements IOFramework {
 	private GameState gs;
 	private Scanner input = new Scanner(System.in);
 	
-	public ConsoleIO(){
-		gs = new GameState();
+	public ConsoleIO(GameState gs){
+		this.gs = gs;
 	}
 
 	@Override
@@ -19,7 +19,7 @@ public class ConsoleIO implements IOFramework {
 
 	@Override
 	public MoveInput getMoveInput(Color color, ErrorMessage message) {
-		return gs.getMoveInput(color, input, message);
+		return InputParser.getMoveInput(color, input, gs.getBoard(), message);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class ConsoleIO implements IOFramework {
 		try{
 			while(true){
 				System.out.println("Choose type to promote pawn to - Q, R, B, or K:");
-				PieceType promotionType = gs.getPawnPromotionType(input);	
+				PieceType promotionType = InputParser.getPawnPromotionType(input);	
 				if(promotionType != null)
 					return promotionType;
 				

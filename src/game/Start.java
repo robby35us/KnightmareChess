@@ -22,7 +22,8 @@ public class Start {
 	 * later date.
 	 */
 	public static void main(String[] args) throws IOException{
-		ErrorMessage message = Start.playGame(new ConsoleIO(), new GameState());
+		GameState gs = new GameState();
+		ErrorMessage message = Start.playGame(new ConsoleIO(gs), gs);
 		System.out.println(message);
 	}
 	
