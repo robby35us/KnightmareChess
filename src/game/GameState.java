@@ -107,7 +107,6 @@ public class GameState {
 			message.setPromotePawn();
 		}
 		
-		System.out.println("PreveMove set to" + move);
 		setPreviousMove(move);
 		return message;
 	}
@@ -188,13 +187,11 @@ public class GameState {
 	}
 	
 	public ActualMove getPreviousMove(){
-		System.out.println("getPreviousMove returning " + prevMove);
 		return prevMove;
 	}
 	
 	// public setters
 	public void setPreviousMove(ActualMove prevMove){
 		this.prevMove = prevMove;
-		System.out.println("PreveMove set to " + this.prevMove);
 	}
 }
