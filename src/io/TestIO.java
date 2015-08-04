@@ -8,6 +8,10 @@ import definitions.PieceType;
 import definitions.Turn;
 import game.GameState;
 
+/*
+ * The Test input output framework. Takes a sting in place of user input and 
+ * only prints to the console if showDisplay is set to true. 
+ */
 public class TestIO implements IOFramework {
 	private GameState gs;
 	private Scanner input;
@@ -19,33 +23,58 @@ public class TestIO implements IOFramework {
 		this.showDisplay = showDisplay;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#displayBoard()
+	 */
 	@Override
 	public void displayBoard() {
 		if(showDisplay)
 			ConsoleDisplay.displayBoard(gs.getBoard());
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#getMoveInput(definitions.Color, utility.ErrorMessage)
+	 */
 	@Override
 	public MoveInput getMoveInput(Color color, ErrorMessage message) {
 		return InputParser.getMoveInput(color, input, gs.getBoard(), message);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#displayMessage(utility.ErrorMessage)
+	 */
 	@Override
 	public void displayMessage(ErrorMessage message) {
-		return;
+		if(showDisplay)
+			ConsoleDisplay.displayMessage(message);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#promotePawnTo()
+	 */
 	@Override
 	public PieceType promotePawnTo(){
 		return InputParser.getPawnPromotionType(input);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#runGameIntro()
+	 */
 	@Override
 	public void runGameIntro() {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#displayGetMoveInputText(definitions.Turn)
+	 */
 	@Override
 	public void displayGetMoveInputText(Turn turn) {
 		if(showDisplay)

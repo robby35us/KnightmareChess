@@ -7,7 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({MateTest.class, MoveTest.class, PawnTest.class, MoveDecoratorTest.class})
 public class Test{
 
-	public static final boolean SHOW_DISPLAY = false;
+	public static final boolean SHOW_DISPLAY = true;
 
 	public void runTestSuite(){
 		

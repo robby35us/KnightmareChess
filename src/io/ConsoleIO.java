@@ -4,42 +4,50 @@ import utility.*;
 import definitions.*;
 import game.GameState;
 
+/*
+ * The IOFramework concrete class to use when playing chess when using the 
+ * console for the input and output.
+ */
 public class ConsoleIO implements IOFramework {
 	private GameState gs;
 	private Scanner input = new Scanner(System.in);
+	
 	
 	public ConsoleIO(GameState gs){
 		this.gs = gs;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#displayBoard()
+	 */
 	@Override
 	public void displayBoard() {
 		ConsoleDisplay.displayBoard(gs.getBoard());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#getMoveInput(definitions.Color, utility.ErrorMessage)
+	 */
 	@Override
 	public MoveInput getMoveInput(Color color, ErrorMessage message) {
 		return InputParser.getMoveInput(color, input, gs.getBoard(), message);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#displayMessage(utility.ErrorMessage)
+	 */
 	@Override
 	public void displayMessage(ErrorMessage message) {
-		if(message.getConstraintNotMet()){
-			System.out.println("This piece cannot move there at this time.");
-		}
-		else if(message.getIllegalPattern()){
-			System.out.println("This piece cannot move in that pattern.");
-		}
-		else if(message.getWrongColorMoving()){
-			System.out.println("This piece is the wrong color.");
-		}
-		else if(message.getWrongColorCaptured()){
-			System.out.println("This piece cannot capture a piece of the same color.");
-		}
-		if(message.hasError())
-			ConsoleDisplay.invalidMoveText();
+		ConsoleDisplay.displayMessage(message);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#promotePawnTo()
+	 */
 	@Override
 	public PieceType promotePawnTo() {
 		try{
@@ -58,12 +66,20 @@ public class ConsoleIO implements IOFramework {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#runGameIntro()
+	 */
 	@Override
 	public void runGameIntro() {
 		// TODO /* leaving blank for now */
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see definitions.IOFramework#displayGetMoveInputText(definitions.Turn)
+	 */
 	@Override
 	public void displayGetMoveInputText(Turn turn) {
 		ConsoleDisplay.displayGetMoveInputText(turn);
