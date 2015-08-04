@@ -1,16 +1,20 @@
 package utility;
 
 /*
- * 
+ * Used to transport flags about errors and events like Check around to
+ * various parts of the code. Has a series of flags that can be set.
  */
 public class ErrorMessage {
 	
+	// symbolizes that no flag has been set
+	private boolean noError = true;
+	
+	// flags all set to false
 	private boolean check = false;
 	private boolean mate = false;
 	private boolean illegalPattern = false;
 	private boolean wrongColorMoving = false;
 	private boolean wrongColorCaptured = false;
-	private boolean noError = true;
 	private boolean disallowedMove = false;
 	private boolean nullInput = false;
 	private boolean invalidInput = false;
@@ -54,6 +58,13 @@ public class ErrorMessage {
 		
 	}
 
+	// returns true if a flag has been set.
+	public boolean hasError(){
+		return !noError;
+	}
+	
+	// public setters. Set the given flag to true 
+	// and noError to false. 
 	public void setCheck(){
 		check = true;
 		noError = false;
@@ -87,11 +98,38 @@ public class ErrorMessage {
 		nullInput = true;
 		noError = false;
 	}
-	
-	public boolean hasError(){
-		return !noError;
+
+	public void setInvalidInput() {
+		invalidInput  = true;
+		noError = false;
 	}
 	
+	public void setNoPieceToMove() {
+		noPieceToMove  = true;
+		noError = false;
+	}
+	
+
+	public void setConstraintNotMet() {
+		constraintNotMet  = true;
+		noError = false;
+	}
+
+	public void setPromotePawn() {
+		promotePawn = true;
+		noError = false;
+	}
+	
+
+	public void setUnableToPromotePawn() {
+		unableToPromotePawn = true;
+		noError = false;// TODO Auto-generated method stub
+	}
+	
+	
+	
+	
+	// public getters
 	public boolean getCheck(){
 		return check;
 	}
@@ -119,48 +157,23 @@ public class ErrorMessage {
 	public boolean getNullInput() {
 		return nullInput;
 	}
-
-	public void setInvalidInput() {
-		invalidInput  = true;
-		noError = false;
-	}
 	
 	public boolean getInvalidInput(){
 		return invalidInput;
 	}
-
-	public void setNoPieceToMove() {
-		noPieceToMove  = true;
-		noError = false;
-	}
 	
 	public boolean getNoPieceToMove(){
 		return noPieceToMove;
-	}
-
-	public void setConstraintNotMet() {
-		constraintNotMet  = true;
-		noError = false;
 	}
 	
 	public boolean getConstraintNotMet(){
 		return constraintNotMet;
 	}
 
-	public void setPromotePawn() {
-		promotePawn = true;
-		noError = false;
-	}
-	
 	public boolean getPromotePawn(){
 		return promotePawn;
 	}
 
-	public void setUnableToPromotePawn() {
-		unableToPromotePawn = true;
-		noError = false;// TODO Auto-generated method stub
-	}
-	
 	public boolean getUnableToPromotePawn(){
 		return unableToPromotePawn;
 	}

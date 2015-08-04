@@ -1,7 +1,10 @@
 package utility;
-
 import components.Space;
 
+/*
+ * A transporter object used to return information about the
+ * initial Space and destination space for a proposed move.
+ */
 public class MoveInput {
 	private Space init;
 	private Space dest;
@@ -11,6 +14,7 @@ public class MoveInput {
 		this.dest = dest;
 	}
 	
+	// public getters
 	public Space getInit(){
 		return init;
 	}
