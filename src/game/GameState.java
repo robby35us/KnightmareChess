@@ -61,8 +61,6 @@ public class GameState {
 		Setup.setupChessBoard(sets[0], sets[1], board);
 	}
 
-	
-
 	/*
 	 * Moves the piece to it's new positions, using the information provided
 	 * in move and turn to get the initial and destination location and for
@@ -111,6 +109,11 @@ public class GameState {
 		return message;
 	}
 	
+	/*
+	 * Removes the given pawn from the board and the Player's PlayerSet
+	 * and replaces it with a piece of the given type. NOTE: THIS FUNCTION
+	 * ALWAYS RETURNS TRUE!!
+	 */
 	public boolean promotePawn(Piece moving, PieceType promotionType) {
 		Color color = moving.getColor();
 		Player player = color == Color.White ? whitePlayer : blackPlayer;
@@ -121,36 +124,61 @@ public class GameState {
 		return true;
 	}
 
+	/*
+	 * Move the piece at move.getInitialSpace() to move.getDestinationSpace().
+	 * Returns the captured piece, if any.
+	 */
 	public static Piece movePiece(ActualMove move){
 		Piece moving = move.getInitialSpace().getPiece();
+		
+		// set space variables
 		Space capturedSpace;
 		Space dest = move.getDestinationSpace();
 		if(move.getClass() == MoveEnPassantRight.class || move.getClass() == MoveEnPassantLeft.class)
 			capturedSpace = (moving.getColor() == Color.White) ? dest.getSpaceBackward() : dest.getSpaceForward();
 		else
 			capturedSpace = dest;
+		
+		// get the destination piece
 		Piece captured = capturedSpace.getPiece();
+		
+		// this is in case the capturedSpace is different than the destination space
 		capturedSpace.changePiece(null);
+		
+		// move piece
 		move.getDestinationSpace().changePiece(moving);
 		move.getInitialSpace().changePiece(null);
 
 		return captured;
 	}
 	
+	/*
+	 * Set's everything back to the way it was before the last move.
+	 */
 	public static Space undoMove(ActualMove move, Piece captured){
 		Piece moving = move.getDestinationSpace().getPiece();
+		
+		// set spaces
 		Space capturedSpace;
 		Space dest = move.getDestinationSpace();
 		if(move.getClass() == MoveEnPassantRight.class || move.getClass() == MoveEnPassantLeft.class)
 			capturedSpace = (moving.getColor() == Color.White) ? dest.getSpaceBackward() : dest.getSpaceForward();
 		else
 			capturedSpace = dest;
+		
+		// move replace pieces
 		move.getInitialSpace().changePiece(moving);
-		dest.changePiece(null);
+		dest.changePiece(null); // in case dest is different than captureSpace
 		capturedSpace.changePiece(captured);
+		
 		return capturedSpace;
 	}
 
+	/*
+	 * Verifies that universal constraints are met. Currently checks that there is a moving 
+	 * piece, that it is the right color, and that the piece to be captured, if any, is of
+	 * the opposite color. 
+	 */
 	public boolean meetsUniversalConstraints(ActualMove move, Turn turn, ErrorMessage message) {
 		Space init = move.getInitialSpace();
 		Space dest = move.getDestinationSpace();
@@ -168,6 +196,10 @@ public class GameState {
 		return true;
 	}
 	
+	/*
+	 * Checks to see if the given player has been put in Checkmate.
+	 * Returns the given ErrorMessage object.
+	 */
 	public ErrorMessage checkForMate(Turn turn, ErrorMessage message) {
 		Player player = turn == Turn.Player1 ? whitePlayer : blackPlayer;
 		if(whitePlayer != null){
@@ -181,7 +213,6 @@ public class GameState {
 		return board;
 	}
 	
-
 	public ArrayList<ErrorMessage> getMessages() {
 		return messages;
 	}
