@@ -26,7 +26,7 @@ public class Space {
 		
 		// The color is set by taking the sum of the coordinates and querying 
 		// whether it is odd or even;
-		this.color = ((rank.ordinal() + file.ordinal()) & 1) == 0 ? Color.White : Color.Black;
+		this.color = ((rank.ordinal() + file.ordinal()) & 1) == 0 ? Color.Black : Color.White;
 		
 		this.piece = null; 
 		this.board = board;

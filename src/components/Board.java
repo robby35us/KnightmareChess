@@ -27,12 +27,16 @@ public class Board {
 				spaces[r.ordinal()][f.ordinal()] = new Space(r,f, this);
 	}
 	
+	
+	
 	/*
 	 * This function finds another space(the next space) on the board in relation to
 	 * a given space (initialSpace) using the rankOffset and fileOffset. It returns 
 	 * null if there is no such space. 
 	 */
 	public Space getNextSpace(int rankOffset, int fileOffset, Space initialSpace){
+		if(initialSpace == null)
+			return null;
 		int newRank = initialSpace.getRank().ordinal() + rankOffset;
 		int newFile = initialSpace.getFile().ordinal() + fileOffset;
 		if(newRank >= 0 && newRank < Rank.values().length &&
@@ -48,6 +52,8 @@ public class Board {
 	 * Returns the Space on the Board at the given coordinates.
 	 */
 	public Space getSpace(Rank rank, File file){
+		if(rank == null || file == null)
+			return null;
 		return spaces[rank.ordinal()][file.ordinal()];
 	}
 }
