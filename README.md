@@ -17,7 +17,9 @@ diagonally(no capture), and captures straight forward only. And if you are
 lucky enough to get the card, you can even make your king move twice every 
 turn, allowing him to put up quite a fight and be fiendishly difficult to 
 capture on his own.
-    The current version of this game, simply allows two people to play a 
+
+
+The current version of this game, simply allows two people to play a 
 rudimentary version of regular chess using an ascii representation of a board 
 and does not implement any of the "Knightmare Chess" rules. In fact it doesn't 
 every rule of chess. In particular, it doesn't recognize draws or stalemates. 
@@ -32,7 +34,9 @@ from the ground up with the intention of having to support the needs of
 Knightmare chess. In particular, the object representation of a single move 
 can include anything the Knightmare rules can cook up, while still restricting 
 the standard moves to standard rules.
-    The other primary goal of this code is to allow me to explore the uses and 
+    
+    
+The other primary goal of this code is to allow me to explore the uses and 
 implementations of common design patterns. I used the decorator pattern to 
 construct a Move object, so that complicated moves can be built out of the 
 standard ones. I used the factory pattern in a couple of places, both to create 
@@ -43,7 +47,9 @@ to facilitate the prevention of placing your own King in check. All pieces of th
 opposite color, will be alerted when the king tries to move and will alert the 
 King if they can check the King in the proposed move. A similar mechanism is used
 when any other piece moves than the king is moved.
-    As for the main design of the program, the first thing to be noticed is that 
+    
+
+As for the main design of the program, the first thing to be noticed is that 
 there is a large number of classes seperated into a fairly large number of 
 packages. Part of this is because of the use of the decorator pattern to 
 construct moves and the use of seperate classes to define each "constraint" that 
@@ -62,6 +68,8 @@ brief discription of what you will find in each of the packages in the src file.
     factory - Contains two factory classes, PieceFactory and MoveFactory, that 
         encapsulate the code to create an object of the specified type.
     game - Contains the code used to actually run a chess game between two players
+    io - Contains the classes used for input and output, including parsing input,
+        regardless of the source.
     moves - Contains a slew of ActualMove(abstract) classes that represent the 
         various possible moves, from simply moving forward one space, to the L-shape 
         move of a knight. Each of these is a decorator for another move. Also contains 
@@ -71,8 +79,7 @@ brief discription of what you will find in each of the packages in the src file.
         which places a piece anywhere on the board, and "MoveOffBoard," which completely 
         removes a piece from the board, but not from the game.
     test - Contains all the testing code for the game.
-    utility - Contains various utility classes that don't have another home at the 
-        present time. These classes include MoveBuilder, and MoveCompositor, which does
-        some of the heavy lifting around constructing a move object. You will also find
-        little "transport" classes that just contain getters and setters for passing 
-        groups of related data around the project.
+    utility - Contains little "transport" classes that just contain getters and setters
+        for passing groups of related data around the project, including the ErrorMessage 
+        class, which contains a set of flags about user errors and events that occur during the
+        game.
