@@ -1,4 +1,4 @@
-package test;
+package testIntegration;
 
 import org.junit.Test;
 
@@ -12,6 +12,7 @@ import definitions.PieceType;
 import definitions.Rank;
 import game.*;
 import io.TestIO;
+import test.TestUtility;
 
 
 

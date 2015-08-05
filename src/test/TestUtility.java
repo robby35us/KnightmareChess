@@ -1,5 +1,6 @@
 package test;
 import moves.Move;
+import testIntegration.PieceInfo;
 
 import org.junit.Assert;
 

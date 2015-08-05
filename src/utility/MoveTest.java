@@ -1,4 +1,4 @@
-package test;
+package utility;
 import game.GameState;
 import game.Start;
 import io.TestIO;
@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import utility.ErrorMessage;
 
 public class MoveTest {
 	

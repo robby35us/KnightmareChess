@@ -1,5 +1,7 @@
-package test;
+package testIntegration;
 import moves.Move;
+import test.TestUtility;
+
 import org.junit.Test;
 import definitions.Color;
 import definitions.MoveType;

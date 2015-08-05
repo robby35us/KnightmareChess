@@ -6,7 +6,7 @@ import definitions.*;
  * chess board. It holds it's rank and file information
  * and it's color. It also holds information about which 
  * piece, if any, is occupying it. It contains a reference
- * to the board object and some convienice functions to 
+ * to the board object and some convenience functions to 
  * return adjacent spaces.
  */
 public class Space {
